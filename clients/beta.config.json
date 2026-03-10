@@ -1,0 +1,77 @@
+{
+  "brand": {
+    "id": "client-beta",
+    "name": "BetNova",
+    "slug": "betnova",
+    "tagline": "O futuro das apostas",
+    "logoUrl": "https://placehold.co/200x60/4F46E5/FFFFFF?text=BetNova",
+    "faviconUrl": "https://placehold.co/32x32/4F46E5/FFFFFF?text=B",
+    "supportEmail": "support@betnova.com"
+  },
+  "theme": {
+    "colors": {
+      "primary": "#4F46E5",
+      "primaryHover": "#4338CA",
+      "secondary": "#EC4899",
+      "background": "#0D0F1A",
+      "backgroundCard": "#161929",
+      "surface": "#1E2235",
+      "text": "#F8FAFC",
+      "textMuted": "#A0AABF",
+      "border": "#252A40",
+      "success": "#10B981",
+      "error": "#F43F5E",
+      "warning": "#FBBF24",
+      "oddsUp": "#10B981",
+      "oddsDown": "#F43F5E"
+    },
+    "typography": {
+      "fontFamily": "Outfit, system-ui, sans-serif",
+      "fontFamilyMono": "Fira Code, ui-monospace, monospace",
+      "scaleBase": 16
+    }
+  },
+  "layout": {
+    "sidebarWidth": 280,
+    "headerHeight": 64,
+    "betSlipWidth": 360,
+    "borderRadius": "lg",
+    "sidebarPosition": "left",
+    "sidebarBehavior": "collapsible",
+    "headerVariant": "floating",
+    "footerVariant": "simple",
+    "betslipPosition": "bottom-drawer",
+    "mobileNav": "bottom"
+  },
+  "features": {
+    "sportsbook": true,
+    "liveBetting": true,
+    "casino": false,
+    "liveCasino": false,
+    "esports": true,
+    "cashOut": true,
+    "betBuilder": false,
+    "liveStreaming": false,
+    "affiliates": false,
+    "vipProgram": false,
+    "responsibleGambling": true,
+    "socialLogin": true,
+    "statistics": true,
+    "multiLanguage": false,
+    "darkMode": true,
+    "pushNotifications": false,
+    "search": true,
+    "favorites": true,
+    "promotions": true,
+    "virtualSports": false
+  },
+  "regional": {
+    "defaultLocale": "pt-BR",
+    "supportedLocales": ["pt-BR", "en-US"],
+    "defaultCurrency": "BRL",
+    "defaultOddsFormat": "decimal",
+    "timezone": "America/Sao_Paulo",
+    "dateFormat": "dd/MM/yyyy"
+  },
+  "remotes": {}
+}

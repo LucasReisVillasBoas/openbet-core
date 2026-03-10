@@ -1,0 +1,77 @@
+{
+  "brand": {
+    "id": "client-alpha",
+    "name": "AlphaBet",
+    "slug": "alphabet",
+    "tagline": "Aposte com inteligência",
+    "logoUrl": "https://placehold.co/200x60/1A7A4A/FFFFFF?text=AlphaBet",
+    "faviconUrl": "https://placehold.co/32x32/1A7A4A/FFFFFF?text=A",
+    "supportEmail": "suporte@alphabet.com"
+  },
+  "theme": {
+    "colors": {
+      "primary": "#1A7A4A",
+      "primaryHover": "#15623C",
+      "secondary": "#F59E0B",
+      "background": "#0F1923",
+      "backgroundCard": "#1A2535",
+      "surface": "#243447",
+      "text": "#F1F5F9",
+      "textMuted": "#94A3B8",
+      "border": "#2D3F55",
+      "success": "#22C55E",
+      "error": "#EF4444",
+      "warning": "#F59E0B",
+      "oddsUp": "#22C55E",
+      "oddsDown": "#EF4444"
+    },
+    "typography": {
+      "fontFamily": "Inter, system-ui, sans-serif",
+      "fontFamilyMono": "JetBrains Mono, ui-monospace, monospace",
+      "scaleBase": 16
+    }
+  },
+  "layout": {
+    "sidebarWidth": 280,
+    "headerHeight": 64,
+    "betSlipWidth": 360,
+    "borderRadius": "md",
+    "sidebarPosition": "left",
+    "sidebarBehavior": "fixed",
+    "headerVariant": "full",
+    "footerVariant": "expanded",
+    "betslipPosition": "sidebar-right",
+    "mobileNav": "bottom"
+  },
+  "features": {
+    "sportsbook": true,
+    "liveBetting": true,
+    "casino": true,
+    "liveCasino": true,
+    "esports": false,
+    "cashOut": true,
+    "betBuilder": true,
+    "liveStreaming": false,
+    "affiliates": true,
+    "vipProgram": true,
+    "responsibleGambling": true,
+    "socialLogin": false,
+    "statistics": true,
+    "multiLanguage": false,
+    "darkMode": true,
+    "pushNotifications": false,
+    "search": true,
+    "favorites": true,
+    "promotions": true,
+    "virtualSports": false
+  },
+  "regional": {
+    "defaultLocale": "pt-BR",
+    "supportedLocales": ["pt-BR", "en-US"],
+    "defaultCurrency": "BRL",
+    "defaultOddsFormat": "decimal",
+    "timezone": "America/Sao_Paulo",
+    "dateFormat": "dd/MM/yyyy"
+  },
+  "remotes": {}
+}

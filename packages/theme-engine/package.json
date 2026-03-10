@@ -1,0 +1,27 @@
+{
+  "name": "@openbet/theme-engine",
+  "version": "0.0.1",
+  "private": false,
+  "description": "Reads ClientConfig and applies CSS Custom Properties to the DOM — the only mechanism allowed to inject theme tokens",
+  "type": "module",
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": ["dist"],
+  "scripts": {
+    "build": "tsc --build",
+    "dev": "tsc --build --watch",
+    "clean": "rm -rf dist tsconfig.tsbuildinfo"
+  },
+  "dependencies": {
+    "@openbet/config-schema": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.2"
+  }
+}
