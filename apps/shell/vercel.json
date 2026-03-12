@@ -1,6 +1,0 @@
-{
-  "buildCommand": "bash build-vercel.sh",
-  "outputDirectory": ".next",
-  "installCommand": "echo skip",
-  "framework": "nextjs"
-}
