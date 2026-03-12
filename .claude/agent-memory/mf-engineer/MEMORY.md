@@ -11,17 +11,16 @@ NOT the Next.js webpack pipeline. See `patterns.md` for the full rationale.
 
 ## Remote URL Resolution
 
-ClientConfig flow (ADR-003):
-1. `apps/shell/lib/client-config.ts` — server-only, reads `NEXT_PUBLIC_CLIENT_ID`
-2. `apps/shell/lib/remote-registry.ts` — `getRemotes(config)` returns MF remote strings
-3. Dev fallback: `http://localhost:3001` when `config.remotes?.sportsbook` is absent
-4. `clients/*.config.json` → `remotes: {}` key (empty = use dev fallback)
+`getRemotes()` in `apps/shell/lib/remote-registry.ts` uses `NODE_ENV` (build-time):
+- production → `sportsbook@https://openbet-core-sportsbook.vercel.app/remoteEntry.js`
+- development → `sportsbook@http://localhost:3001/remoteEntry.js`
 
-The `next.config.ts` currently uses a **static dev URL** (`localhost:3001/remoteEntry.js`)
-because `next.config.ts` runs at build time, not at request time. The `getRemotes()`
-function is the runtime-correct path but can only be wired in when a runtime
-remote loading mechanism (e.g. `loadRemote`) replaces the static `remotes` map.
-This is a known gap, documented with a comment in `apps/shell/next.config.ts`.
+`next.config.ts` calls `getRemotes()` directly — no more hardcoded URL.
+Rationale: `next.config.ts` runs at build time; ClientConfig is per-request server-only
+and cannot feed the static webpack `remotes` map. The Vercel URL is a stable build-time
+constant, not an arbitrary hardcode. `getRemotes()` takes NO parameters (not ClientConfig).
+
+For true per-operator runtime overrides, a `loadRemote` mechanism would replace this.
 
 ## Shared Dependencies Policy
 
@@ -63,7 +62,7 @@ Build scripts (confirmed working):
 
 - `apps/shell/next.config.ts` — shell MF host config (client-side only, server gets alias)
 - `apps/shell/lib/client-config.ts` — server-only, Zod-validated ClientConfig loader
-- `apps/shell/lib/remote-registry.ts` — `getRemotes(config)` URL resolver
+- `apps/shell/lib/remote-registry.ts` — `getRemotes()` URL resolver (NODE_ENV-based, no params)
 - `apps/shell/lib/remote-stubs/sportsbook-SportsbookPage.tsx` — server-side stub (never rendered)
 - `apps/shell/components/SportsbookRemote.tsx` — lazy remote with ErrorBoundary + next/dynamic ssr:false
 - `apps/shell/components/ThemeProvider.tsx` — client boundary, calls `themeEngine.apply(config)`

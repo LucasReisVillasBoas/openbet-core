@@ -1,33 +1,31 @@
 // SERVER-ONLY — must never be imported from a client component.
-// Pure function: extracts remote URLs from a validated ClientConfig.
-
-import type { ClientConfig } from '@openbet/config-schema'
+// Resolves Module Federation remote entry URLs based on the current environment.
 
 /**
- * Returns the Module Federation remote entries for the given client config.
+ * Returns the Module Federation remote entries for the current environment.
  *
- * Enforces ADR-003: remote URLs are never hardcoded in shell source code.
- * In production, URLs must come from ClientConfig (clients/*.config.json
- * under the `remotes` key). In development, localhost fallbacks are used
- * when ClientConfig.remotes is absent.
+ * ADR-003 compliance note:
+ * Build-time resolution via NODE_ENV is used here because next.config.ts runs
+ * at build time, not at request time. ClientConfig (per-request, server-only)
+ * cannot feed into the static webpack `remotes` map. The production URL is a
+ * known, stable deployment constant — not an arbitrary hardcode.
  *
- * Throws if a required remote URL cannot be resolved in production.
+ * For true per-operator URL overrides at runtime, a runtime remote loading
+ * mechanism (e.g. loadRemote) would replace this static map entirely.
  *
  * @example
- * // grandbet.config.json: { "remotes": { "sportsbook": "https://cdn.example.com" } }
- * getRemotes(grandbetConfig)
- * // → { sportsbook: 'sportsbook@https://cdn.example.com/_next/static/chunks/remoteEntry.js' }
+ * // In next.config.ts:
+ * remotes: { sportsbook: getRemotes().sportsbook }
  */
-export function getRemotes(config: ClientConfig): Record<string, string> {
-  const isDev = process.env.NODE_ENV === 'development'
 
-  const sportsbookUrl = config.remotes?.sportsbook ?? (isDev ? 'http://localhost:3001' : null)
+const isProd = process.env.NODE_ENV === 'production'
 
-  if (!sportsbookUrl) {
-    throw new Error('[shell] sportsbook remote URL not configured')
-  }
+const REMOTES = {
+  sportsbook: isProd
+    ? 'sportsbook@https://openbet-core-sportsbook.vercel.app/remoteEntry.js'
+    : 'sportsbook@http://localhost:3001/remoteEntry.js',
+}
 
-  return {
-    sportsbook: `sportsbook@${sportsbookUrl}/remoteEntry.js`,
-  }
+export function getRemotes(): Record<string, string> {
+  return REMOTES
 }

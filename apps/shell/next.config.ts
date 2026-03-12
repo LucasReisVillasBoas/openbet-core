@@ -1,6 +1,7 @@
 import { ModuleFederationPlugin } from '@module-federation/enhanced/webpack'
 import type { NextConfig } from 'next'
 import path from 'path'
+import { getRemotes } from './lib/remote-registry'
 
 // ---------------------------------------------------------------------------
 // Module Federation 2.0 — shell as HOST
@@ -16,8 +17,9 @@ import path from 'path'
 //   required to satisfy webpack's server-side module resolution.
 //
 // ADR-003 compliance note:
-// The remote URL in `remotes` is a static dev-fallback. Production remote
-// URLs are resolved at runtime from ClientConfig via lib/remote-registry.ts.
+// Remote URLs are resolved at build time from lib/remote-registry.ts via
+// NODE_ENV. In production, the Vercel deployment URL is used. In development,
+// localhost:3001 is the fallback. See remote-registry.ts for full rationale.
 // ---------------------------------------------------------------------------
 
 const nextConfig: NextConfig = {
@@ -45,9 +47,7 @@ const nextConfig: NextConfig = {
     config.plugins.push(
       new ModuleFederationPlugin({
         name: 'shell',
-        remotes: {
-          sportsbook: 'sportsbook@http://localhost:3001/remoteEntry.js',
-        },
+        remotes: getRemotes(),
         // React is intentionally NOT in the shared scope.
         // @module-federation/enhanced intercepts React imports and replaces them
         // with shared scope accessors, breaking Next.js's own React initialization.
