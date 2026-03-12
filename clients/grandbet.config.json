@@ -1,12 +1,12 @@
 {
   "brand": {
-    "id": "client-alpha",
-    "name": "AlphaBet",
-    "slug": "alphabet",
+    "id": "client-grandbet",
+    "name": "GrandBet",
+    "slug": "grandbet",
     "tagline": "Aposte com inteligência",
-    "logoUrl": "https://placehold.co/200x60/1A7A4A/FFFFFF?text=AlphaBet",
-    "faviconUrl": "https://placehold.co/32x32/1A7A4A/FFFFFF?text=A",
-    "supportEmail": "suporte@alphabet.com"
+    "logoUrl": "https://placehold.co/200x60/1A7A4A/FFFFFF?text=GrandBet",
+    "faviconUrl": "https://placehold.co/32x32/1A7A4A/FFFFFF?text=G",
+    "supportEmail": "suporte@grandbet.com"
   },
   "theme": {
     "colors": {

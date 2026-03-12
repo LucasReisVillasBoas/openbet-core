@@ -12,8 +12,8 @@ function loadConfig(filename: string) {
   )
 }
 
-const alphaConfig = loadConfig('alpha.config.json')
-const betaConfig = loadConfig('beta.config.json')
+const grandbetConfig = loadConfig('grandbet.config.json')
+const elitebetConfig = loadConfig('elitebet.config.json')
 
 // Simulate DOM with jsdom
 const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>')
@@ -43,27 +43,27 @@ const getVar = (name: string) => el.style.getPropertyValue(name)
 const getAttr = (name: string) => el.getAttribute(name) ?? ''
 
 // ---------------------------------------------------------------------------
-// apply(alpha)
+// apply(grandbet)
 // ---------------------------------------------------------------------------
 
-console.log('\napply(alpha):')
-engine.apply(alphaConfig)
+console.log('\napply(grandbet):')
+engine.apply(grandbetConfig)
 
 assert('--color-primary === #1A7A4A', getVar('--color-primary'), '#1A7A4A')
 assert('--color-background === #0F1923', getVar('--color-background'), '#0F1923')
 assert('data-theme === dark', getAttr('data-theme'), 'dark')
-assert('data-client === alphabet', getAttr('data-client'), 'alphabet')
+assert('data-client === grandbet', getAttr('data-client'), 'grandbet')
 
 // ---------------------------------------------------------------------------
-// apply(beta)
+// apply(elitebet)
 // ---------------------------------------------------------------------------
 
-console.log('\napply(beta):')
-engine.apply(betaConfig)
+console.log('\napply(elitebet):')
+engine.apply(elitebetConfig)
 
 assert('--color-primary === #4F46E5', getVar('--color-primary'), '#4F46E5')
 assert('--color-background === #0D0F1A', getVar('--color-background'), '#0D0F1A')
-assert('data-client === betnova', getAttr('data-client'), 'betnova')
+assert('data-client === elitebet', getAttr('data-client'), 'elitebet')
 
 // ---------------------------------------------------------------------------
 // reset()

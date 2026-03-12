@@ -141,8 +141,8 @@ export const ThemeComparison: Story = {
       }}
     >
       {[
-        { label: 'AlphaBet', homeTeam: 'Flamengo', awayTeam: 'Palmeiras' },
-        { label: 'BetNova', homeTeam: 'Barcelona', awayTeam: 'Real Madrid' },
+        { label: 'GrandBet', homeTeam: 'Flamengo', awayTeam: 'Palmeiras' },
+        { label: 'EliteBet', homeTeam: 'Barcelona', awayTeam: 'Real Madrid' },
       ].map(({ label, homeTeam, awayTeam }) => (
         <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <span

@@ -118,8 +118,8 @@ export const ThemeComparison: Story = {
       }}
     >
       {[
-        { label: 'AlphaBet', eventId: '123' },
-        { label: 'BetNova', eventId: '124' },
+        { label: 'GrandBet', eventId: '123' },
+        { label: 'EliteBet', eventId: '124' },
       ].map(({ label, eventId }) => (
         <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <span

@@ -3,13 +3,13 @@
 import { useClientConfig, useSetClient, type ClientId } from '@/lib/client-config-context'
 
 const OTHER_CLIENT: Record<ClientId, ClientId> = {
-  'client-alpha': 'client-beta',
-  'client-beta': 'client-alpha',
+  'client-grandbet': 'client-elitebet',
+  'client-elitebet': 'client-grandbet',
 }
 
 const OTHER_LABEL: Record<ClientId, string> = {
-  'client-alpha': 'BetNova',
-  'client-beta': 'AlphaBet',
+  'client-grandbet': 'EliteBet',
+  'client-elitebet': 'GrandBet',
 }
 
 export function ThemeToggle() {

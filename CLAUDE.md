@@ -60,8 +60,8 @@ por um arquivo JSON de configuração.
   ClientConfig como prop do layout server e chama themeEngine.apply().
 
 ## Clientes ativos
-- client-alpha → AlphaBet (verde escuro, #1A7A4A)
-- client-beta  → BetNova (azul/roxo, #4F46E5)
+- client-grandbet → GrandBet (verde escuro, #1A7A4A)
+- client-elitebet → EliteBet (azul/roxo, #4F46E5)
 
 ## Estado atual
 - packages/config-schema → buildando, schema completo

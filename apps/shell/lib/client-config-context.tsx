@@ -3,18 +3,18 @@
 import { createContext, useContext, useState, useEffect, type ReactNode } from 'react'
 import { ClientConfigSchema, type ClientConfig } from '@openbet/config-schema'
 import { themeEngine } from '@openbet/theme-engine'
-import alphaConfig from '../../../clients/alpha.config.json'
-import betaConfig from '../../../clients/beta.config.json'
+import grandbetConfig from '../../../clients/grandbet.config.json'
+import elitebetConfig from '../../../clients/elitebet.config.json'
 
 // ---------------------------------------------------------------------------
 // Client registry
 // ---------------------------------------------------------------------------
 
-export type ClientId = 'client-alpha' | 'client-beta'
+export type ClientId = 'client-grandbet' | 'client-elitebet'
 
 const CLIENT_CONFIGS: Record<ClientId, unknown> = {
-  'client-alpha': alphaConfig,
-  'client-beta': betaConfig,
+  'client-grandbet': grandbetConfig,
+  'client-elitebet': elitebetConfig,
 }
 
 const LS_KEY = 'openbet-client'

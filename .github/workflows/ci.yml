@@ -25,6 +25,9 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
+      - name: Set build environment
+        run: echo "NEXT_PUBLIC_CLIENT_ID=client-grandbet" >> $GITHUB_ENV
+
       - name: Build
         run: pnpm build
 

@@ -9,8 +9,8 @@ function loadRaw(filename: string): unknown {
 }
 
 const entries = [
-  { label: 'AlphaBet', file: 'alpha.config.json' },
-  { label: 'BetNova ', file: 'beta.config.json' },
+  { label: 'GrandBet', file: 'grandbet.config.json' },
+  { label: 'EliteBet', file: 'elitebet.config.json' },
 ] as const
 
 let failed = false

@@ -153,7 +153,7 @@ export const FeaturesSchema = z.object({
 
 export const BrandSchema = z.object({
   /** Unique client identifier — used for analytics, logging and multi-tenant routing */
-  id: z.string().min(1).describe('Unique client identifier (e.g. "client-alpha")'),
+  id: z.string().min(1).describe('Unique client identifier (e.g. "client-grandbet")'),
   /** Operator display name shown in the UI */
   name: z.string().min(1).describe('Operator display name'),
   /** Short marketing tagline shown in hero areas and metadata */
@@ -214,7 +214,7 @@ export const ClientConfigSchema = z.object({
   /**
    * Module Federation remote entry URLs keyed by remote name.
    * All values must be valid URLs — never hardcode these in app code.
-   * Example: { "sportsbook": "https://cdn.alpha.bet/sportsbook/mf.js" }
+   * Example: { "sportsbook": "https://cdn.grandbet.com/sportsbook/mf.js" }
    */
   remotes: z
     .record(z.string(), z.string().url())

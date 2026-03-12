@@ -1,5 +1,10 @@
 'use client'
 
+// Prevent Next.js from attempting static prerender of this page.
+// The page depends on ClientConfig (loaded at request time) and consumes
+// Module Federation remotes — neither is available at build time.
+export const dynamic = 'force-dynamic'
+
 import { SportsbookRemote } from '@/components/SportsbookRemote'
 import { BetSlipPanel } from '@/components/BetSlipPanel'
 import { SportsSidebar } from '@/components/SportsSidebar'

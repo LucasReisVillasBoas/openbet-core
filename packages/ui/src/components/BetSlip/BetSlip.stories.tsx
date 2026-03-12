@@ -203,7 +203,7 @@ export const Loading: Story = {
 }
 
 // ---------------------------------------------------------------------------
-// ThemeComparison — two BetSlips side by side (alpha and beta themes)
+// ThemeComparison — two BetSlips side by side (GrandBet and EliteBet themes)
 // The ThemeDecorator controls the global theme; this story shows two
 // structurally identical slips so reviewers can compare them in context.
 // ---------------------------------------------------------------------------
@@ -220,8 +220,8 @@ export const ThemeComparison: Story = {
       }}
     >
       {[
-        { label: 'AlphaBet', selectionName: 'Casa' },
-        { label: 'BetNova', selectionName: 'Fora' },
+        { label: 'GrandBet', selectionName: 'Casa' },
+        { label: 'EliteBet', selectionName: 'Fora' },
       ].map(({ label, selectionName }) => (
         <div key={label} style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           <span

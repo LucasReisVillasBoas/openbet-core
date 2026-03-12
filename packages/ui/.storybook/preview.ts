@@ -1,10 +1,10 @@
 import type { Preview } from '@storybook/react'
 import { themeEngine } from '@openbet/theme-engine'
-import alphaConfig from '../../../clients/alpha.config.json'
+import grandbetConfig from '../../../clients/grandbet.config.json'
 import { ThemeDecorator } from './ThemeDecorator'
 
-// Aplica o tema alpha por padrão em todas as stories
-themeEngine.apply(alphaConfig as any)
+// Aplica o tema grandbet por padrão em todas as stories
+themeEngine.apply(grandbetConfig as any)
 
 const preview: Preview = {
   parameters: {
@@ -15,12 +15,12 @@ const preview: Preview = {
     theme: {
       name: 'Tema',
       description: 'Tema do cliente',
-      defaultValue: 'alpha',
+      defaultValue: 'grandbet',
       toolbar: {
         icon: 'paintbrush',
         items: [
-          { value: 'alpha', title: 'AlphaBet — Verde' },
-          { value: 'beta', title: 'BetNova — Azul' },
+          { value: 'grandbet', title: 'GrandBet — Verde' },
+          { value: 'elitebet', title: 'EliteBet — Azul' },
         ],
         showName: true,
         dynamicTitle: true,

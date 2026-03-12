@@ -14,8 +14,8 @@ import type { ClientConfig } from '@openbet/config-schema'
  * Throws if a required remote URL cannot be resolved in production.
  *
  * @example
- * // alpha.config.json: { "remotes": { "sportsbook": "https://cdn.example.com" } }
- * getRemotes(alphaConfig)
+ * // grandbet.config.json: { "remotes": { "sportsbook": "https://cdn.example.com" } }
+ * getRemotes(grandbetConfig)
  * // → { sportsbook: 'sportsbook@https://cdn.example.com/_next/static/chunks/remoteEntry.js' }
  */
 export function getRemotes(config: ClientConfig): Record<string, string> {

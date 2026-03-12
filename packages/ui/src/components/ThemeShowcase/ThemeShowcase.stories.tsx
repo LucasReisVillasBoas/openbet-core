@@ -128,7 +128,7 @@ export const ThemeComparison: Story = {
             color: 'var(--color-text)',
           }}
         >
-          AlphaBet (Green)
+          GrandBet (Green)
         </h3>
         <ThemeShowcase />
       </div>
@@ -166,7 +166,7 @@ export const ThemeComparison: Story = {
             color: 'var(--color-text)',
           }}
         >
-          BetNova (Purple)
+          EliteBet (Purple)
         </h3>
         <ThemeShowcase />
       </div>
