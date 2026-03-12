@@ -24,6 +24,7 @@ import { getRemotes } from './lib/remote-registry'
 
 const nextConfig: NextConfig = {
   transpilePackages: ['@openbet/ui', '@openbet/theme-engine'],
+  outputFileTracingRoot: path.join(__dirname, '../../'),
 
   webpack(config, { isServer }) {
     // Prevent chunk array collision with other MF apps (both default to webpackChunk_N_E)
