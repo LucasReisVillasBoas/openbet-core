@@ -18,10 +18,11 @@ const nextConfig: NextConfig = {
 
   webpack(config: Configuration, { isServer }: { isServer: boolean }) {
     if (!isServer) {
-      const isProd = process.env.NODE_ENV === 'production'
-      const publicPath = isProd
-        ? 'https://openbet-core-sportsbook.vercel.app/'
-        : 'http://localhost:3001/'
+      const publicPath = process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}/`
+        : process.env.NEXT_PUBLIC_SPORTSBOOK_URL
+          ? `${process.env.NEXT_PUBLIC_SPORTSBOOK_URL}/`
+          : 'http://localhost:3001/'
 
       config.output = config.output ?? {}
       config.output.publicPath = publicPath
