@@ -36,7 +36,11 @@ module.exports = {
   output: {
     path: path.resolve(__dirname, 'public'),
     // publicPath must match the URL from which the shell fetches async chunks.
-    publicPath: 'http://localhost:3001/',
+    // In production this is set via NEXT_PUBLIC_SPORTSBOOK_URL (Vercel env var).
+    // Locally defaults to http://localhost:3001/.
+    publicPath: process.env.NEXT_PUBLIC_SPORTSBOOK_URL
+      ? `${process.env.NEXT_PUBLIC_SPORTSBOOK_URL}/`
+      : 'http://localhost:3001/',
     clean: false, // Don't wipe Next.js public assets on rebuild
   },
 
