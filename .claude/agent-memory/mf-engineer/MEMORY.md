@@ -32,6 +32,22 @@ This diverges from the singleton mandate but is approved for this stack.
 
 See `patterns.md` for the full explanation.
 
+## Next.js 16 + Turbopack Incompatibility
+
+Next.js 16 enables Turbopack by default for `next build`. Turbopack is incompatible
+with webpack plugins including `ModuleFederationPlugin`. The ONLY correct fix is:
+
+- Add `--webpack` flag to the `build` script in each app's `package.json`
+- Do NOT add `experimental.turbo: undefined` — `experimental.turbo` was removed from
+  `ExperimentalConfig` in Next.js 16 (renamed to top-level `turbopack?: TurbopackOptions`)
+  and causes a TypeScript type error that fails the build
+- The `--webpack` flag is the authoritative Turbopack disable mechanism
+- Both apps already have `"dev": "next dev --webpack"` — `build` must match
+
+Build scripts (confirmed working):
+- `apps/shell/package.json`: `"build": "next build --webpack"`
+- `apps/sportsbook/package.json`: `"build": "next build --webpack"`
+
 ## Known Warnings (Non-Fatal)
 
 1. **DTS download warning**: `Failed to download types archive from "http://10.0.0.107:<PORT>/@mf-types.zip"`
