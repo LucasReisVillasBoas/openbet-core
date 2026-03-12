@@ -38,6 +38,23 @@ approach instead (see above).
 client bundle may be set to older environments.
 **Impact**: None in modern browsers. The federation still works correctly.
 
+## Error: `@module-federation/enhanced ModuleFederationPlugin does not accept publicPath`
+**Context**: `@module-federation/enhanced/webpack` v2 `ModuleFederationPlugin` options schema
+**Cause**: Unlike MF 1.0, the v2 `ModuleFederationPlugin` does NOT accept `publicPath` in its
+options object. Passing it causes a fatal schema validation error at webpack startup.
+**Fix**: Move `publicPath` to `output.publicPath` in the top-level webpack config object.
+The plugin infers it from there. MF 2.0 schema valid keys: name, filename, exposes, remotes,
+shared, library, runtime, shareScope, dts, experiments, bridge, runtimePlugins, etc.
+
+## Error: `node webpack.container.cjs` is a no-op when file uses `module.exports = {}`
+**Context**: Standalone MF container build scripts
+**Cause**: A file that only exports a webpack config object does nothing when run with `node`.
+The export is loaded and immediately garbage-collected. webpack-cli is required to consume it,
+OR the file must call `webpack(config, callback)` imperatively.
+**Fix**: Import `webpack` at the top of the file and call `webpack(config, (err, stats) => {...})`
+after defining the config. This makes `node file.cjs` self-executing and removes the need for
+webpack-cli in the npm script. `build:container` becomes `node webpack.container.cjs`.
+
 ## Warning: `[webpack.cache.PackFileCacheStrategy] No serializer registered for ContainerEntryModule`
 **Severity**: Non-critical warning
 **Cause**: webpack's persistent cache cannot serialize MF-internal module types (ContainerEntryModule,

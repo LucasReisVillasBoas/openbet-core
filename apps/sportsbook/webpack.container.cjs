@@ -19,15 +19,17 @@
  * container format and the Promise returned by import() never resolves.
  *
  * Output: apps/sportsbook/public/remoteEntry.js
- * Served at: http://localhost:3001/remoteEntry.js
+ * Served at: https://openbet-core-sportsbook.vercel.app/remoteEntry.js (production)
+ *            http://localhost:3001/remoteEntry.js (dev — use build:container:dev)
  */
 
 const path = require('path')
+const webpack = require('webpack')
 const { ModuleFederationPlugin } = require('@module-federation/enhanced/webpack')
 
-module.exports = {
+const config = {
   name: 'sportsbook-container',
-  mode: 'development',
+  mode: process.env.NODE_ENV === 'development' ? 'development' : 'production',
   devtool: false,
 
   // Empty entry — ModuleFederationPlugin injects 'remoteEntry' as the entry.
@@ -35,6 +37,13 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'public'),
+    // Stable production URL — preview deployments use dynamic VERCEL_URL
+    // but remoteEntry.js must reference a canonical, immutable origin so
+    // the shell can reliably load it across all environments. The dev
+    // variant (build:container:dev) restores localhost for local work.
+    publicPath: process.env.NODE_ENV === 'development'
+      ? 'http://localhost:3001/'
+      : 'https://openbet-core-sportsbook.vercel.app/',
     clean: false, // Don't wipe Next.js public assets on rebuild
   },
 
@@ -80,10 +89,6 @@ module.exports = {
       name: 'sportsbook',
       filename: 'remoteEntry.js',
 
-      publicPath: process.env.VERCEL_URL
-        ? `https://${process.env.VERCEL_URL}/`
-        : 'http://localhost:3001/',
-
       exposes: {
         './SportsbookPage': './app/sportsbook-page.tsx',
       },
@@ -95,3 +100,22 @@ module.exports = {
     }),
   ],
 }
+
+// When invoked directly via `node webpack.container.cjs` (or via the
+// build:container npm script), run webpack imperatively and report results.
+// webpack-cli is NOT required for this execution path.
+webpack(config, (err, stats) => {
+  if (err) {
+    console.error('webpack fatal error:', err.message)
+    process.exit(1)
+  }
+  if (stats.hasErrors()) {
+    console.error(stats.toString({ colors: true, errors: true }))
+    process.exit(1)
+  }
+  const info = stats.toJson({ assets: true, timings: true })
+  const asset = info.assets?.[0]
+  console.log(
+    `[MF container] built in ${info.time}ms — ${asset?.name} (${Math.round((asset?.size ?? 0) / 1024)} KB)`
+  )
+})

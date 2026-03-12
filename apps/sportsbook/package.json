@@ -5,7 +5,8 @@
   "scripts": {
     "dev": "next dev -p 3001",
     "dev:container": "webpack --config webpack.container.cjs --watch --no-stats",
-    "build:container": "webpack --config webpack.container.cjs",
+    "build:container": "node webpack.container.cjs",
+    "build:container:dev": "NODE_ENV=development node webpack.container.cjs",
     "build": "next build --webpack",
     "start": "next start",
     "lint": "eslint"

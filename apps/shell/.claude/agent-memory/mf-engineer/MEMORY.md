@@ -34,6 +34,13 @@ Apps that import from it must add `transpilePackages: ['@openbet/ui']` in next.c
 `config.remotes?.sportsbook` — key is the remote name (string, full URL base).
 `getRemotes()` in `lib/remote-registry.ts` formats it as `name@url/_next/static/chunks/remoteEntry.js`.
 
+## Sportsbook Remote — Production URL & Container Build
+- Production remoteEntry: `https://openbet-core-sportsbook.vercel.app/remoteEntry.js`
+- Container build: `node webpack.container.cjs` (self-executing — no webpack-cli needed)
+- `publicPath` is in `output.publicPath`, NOT in `ModuleFederationPlugin` options (v2 rejects it there)
+- `NODE_ENV=development node webpack.container.cjs` gives localhost:3001 for local dev
+- Vercel buildCommand appends `&& cd apps/sportsbook && node webpack.container.cjs` after next build
+
 ## Links to Detail Files
 - `debugging.md` — root causes and fixes for MF + Next.js 16 errors
 - `patterns.md` — canonical implementation patterns for this project
