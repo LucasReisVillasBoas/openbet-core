@@ -1,6 +1,6 @@
 {
   "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter=shell build",
   "outputDirectory": ".next",
-  "installCommand": "echo skip",
+  "installCommand": "cd ../.. && pnpm install --frozen-lockfile",
   "framework": "nextjs"
 }
