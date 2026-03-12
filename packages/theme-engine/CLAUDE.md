@@ -1,108 +1,38 @@
-# packages/theme-engine — Claude Instructions
+# @openbet/theme-engine
 
 ## Propósito
+Consumir ClientConfig e aplicar identidade visual completa
+em runtime via CSS Custom Properties. Trocar de tema = trocar config.
 
-Este pacote é responsável por **consumir um `ClientConfig` validado e materializar o tema do operador no DOM** via CSS Custom Properties.
+## Exports
+- ThemeEngine → classe com métodos apply(), getConfig(), reset()
+- themeEngine → instância singleton pronta para uso
+- buildCSSVars(config) → função pura que converte config em CSS vars
 
-É a ponte entre a configuração declarativa do cliente e o visual real da aplicação. Toda variação visual entre operadores passa obrigatoriamente por aqui.
+## Regras deste pacote
+- Dependência permitida: APENAS @openbet/config-schema
+- Proibido: React, Tailwind, CSS classes, qualquer framework
+- Proibido: gerar CSS classes — APENAS CSS Custom Properties no :root
+- ThemeEngine deve ser agnóstico de framework
 
----
+## CSS vars geradas
+- --color-primary, --color-primary-hover, --color-secondary
+- --color-background, --color-background-card, --color-surface
+- --color-text, --color-text-muted, --color-border
+- --color-success, --color-error, --color-warning
+- --color-odds-up, --color-odds-down
+- --font-family, --font-family-mono, --font-size-base
+- --radius
+- --brand-name
 
-## Contrato público
+## Como usar
+import { themeEngine } from '@openbet/theme-engine'
+import alphaConfig from '../../clients/alpha.config.json'
+themeEngine.apply(alphaConfig) // injeta todas as CSS vars no :root
 
-```typescript
-// Classe para instâncias múltiplas (ex: testes, iframes isolados)
-export { ThemeEngine } from './ThemeEngine'
-
-// Singleton para uso no app principal
-export { themeEngine } from './themeEngine'
-```
-
-### Interface de `ThemeEngine`
-
-```typescript
-class ThemeEngine {
-  // Aplica todas as CSS vars no :root (ou no elemento passado)
-  apply(config: ClientConfig, target?: HTMLElement): void
-
-  // Remove todas as CSS vars injetadas por esta instância
-  reset(target?: HTMLElement): void
-}
-```
-
----
-
-## Dependências permitidas
-
-```json
-{
-  "dependencies": {
-    "@openbet/config-schema": "workspace:*"
-  }
-}
-```
-
-**Apenas `@openbet/config-schema`.** Nada mais além das APIs nativas do browser.
-
-Proibido adicionar:
-- React ou qualquer framework
-- Bibliotecas de manipulação de CSS (postcss, stylis, etc.)
-- Utilitários de cor (chroma-js, tinycolor, etc.) — transformações de cor, se necessárias, devem ser implementadas internamente com matemática pura
-
----
-
-## Regras de implementação
-
-### CSS vars, nunca CSS classes
-- O `ThemeEngine` **injeta apenas CSS Custom Properties no `:root`** (ou no elemento alvo).
-- **Nunca** gera, injeta ou manipula CSS classes.
-- Correto: `document.documentElement.style.setProperty('--color-brand-primary', '#1a56db')`
-- Errado: criar uma `<style>` tag com `.btn-primary { background: #1a56db }`
-
-### Nomenclatura das CSS vars
-Seguir o padrão: `--<categoria>-<subcategoria>-<variante>`
-
-```
---color-brand-primary
---color-brand-secondary
---color-surface-base
---color-text-default
---typography-font-body
---typography-size-base
---spacing-unit
---radius-card
-```
-
-### Idempotência
-- Chamar `apply()` múltiplas vezes com a mesma config deve ser seguro — sem memory leaks, sem duplicação de vars.
-- `reset()` deve remover exatamente as vars que `apply()` injetou — nada mais.
-
-### Sem side effects no import
-- Importar este pacote não deve modificar o DOM. Apenas chamar `themeEngine.apply()` deve ter efeito.
-
----
-
-## O que nunca fazer neste pacote
-
-- **Nunca gerar CSS classes** — nem via `<style>`, nem via `CSSStyleSheet`, nem via `insertRule`.
-- **Nunca acessar `ClientConfig` sem que ele já tenha sido validado** pelo `ClientConfigSchema`. O `ThemeEngine` recebe um `ClientConfig` já tipado — nunca aceita `unknown` ou `any`.
-- **Nunca hardcodar valores de tema** dentro do engine. Todos os valores vêm do `config` recebido.
-- **Nunca importar de `apps/`** ou de outros packages além de `@openbet/config-schema`.
-
----
-
-## Estrutura de arquivos esperada
-
-```
-packages/theme-engine/
-├── src/
-│   ├── ThemeEngine.ts     # Classe ThemeEngine
-│   ├── themeEngine.ts     # Instância singleton
-│   ├── mappers.ts         # Funções puras: ClientConfig → Record<cssVar, value>
-│   └── index.ts           # Re-exporta ThemeEngine e themeEngine
-├── package.json
-├── tsconfig.json
-└── CLAUDE.md
-```
-
-O arquivo `mappers.ts` contém funções puras testáveis que fazem o mapeamento de campos do `ClientConfig` para nomes e valores de CSS vars. O `ThemeEngine` usa esses mappers — isso mantém a lógica de mapeamento isolada e testável sem DOM.
+## Comportamento do apply()
+1. Converte config em CSS vars via buildCSSVars()
+2. Injeta cada var via element.style.setProperty()
+3. Seta data-theme="dark" ou "light" no element
+4. Seta data-client com o brand.slug do cliente
+5. Loga no console qual tema foi aplicado

@@ -46,7 +46,7 @@ export class ThemeEngine {
 
     throw new Error(
       '[ThemeEngine] No DOM target available. ' +
-        'Pass an HTMLElement to the ThemeEngine constructor when running outside the browser.',
+        'Pass an HTMLElement to the ThemeEngine constructor when running outside the browser.'
     )
   }
 
@@ -83,7 +83,7 @@ export class ThemeEngine {
     console.log(
       `[ThemeEngine] Theme applied — client: "${config.brand.name}" (${config.brand.slug}) | ` +
         `mode: ${config.features.darkMode ? 'dark' : 'light'} | ` +
-        `vars: ${this._appliedVars.length}`,
+        `vars: ${this._appliedVars.length}`
     )
   }
 

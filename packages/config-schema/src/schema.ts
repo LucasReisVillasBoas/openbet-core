@@ -60,12 +60,7 @@ export const TypographySchema = z.object({
     .default('JetBrains Mono, ui-monospace, monospace')
     .describe('Monospace font family for numbers/odds'),
   /** Base font size in px — all rem values scale from this */
-  scaleBase: z
-    .number()
-    .min(12)
-    .max(20)
-    .default(16)
-    .describe('Base font size in px'),
+  scaleBase: z.number().min(12).max(20).default(16).describe('Base font size in px'),
 })
 
 export const ThemeSchema = z.object({
@@ -167,9 +162,7 @@ export const BrandSchema = z.object({
    * URL-safe slug: lowercase alphanumeric + hyphens.
    * Used as a prefix for CSS scoping and analytics events.
    */
-  slug: z
-    .string()
-    .regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens'),
+  slug: z.string().regex(/^[a-z0-9-]+$/, 'Slug must be lowercase alphanumeric with hyphens'),
   /** Absolute URL of the operator logo (SVG or PNG recommended) */
   logoUrl: z.string().url(),
   /** Absolute URL of the favicon */
@@ -190,9 +183,7 @@ export const RegionalSchema = z.object({
   /** Default ISO 4217 currency code (e.g. "GBP", "EUR", "BRL") */
   defaultCurrency: z.string().length(3).default('GBP'),
   /** Default odds display format */
-  defaultOddsFormat: z
-    .enum(['decimal', 'fractional', 'american', 'hongkong'])
-    .default('decimal'),
+  defaultOddsFormat: z.enum(['decimal', 'fractional', 'american', 'hongkong']).default('decimal'),
   /** Default IANA timezone (e.g. "Europe/London", "America/Sao_Paulo") */
   timezone: z.string().default('UTC'),
   /** Date display format using Unicode CLDR tokens (e.g. "dd/MM/yyyy", "MM/dd/yyyy") */

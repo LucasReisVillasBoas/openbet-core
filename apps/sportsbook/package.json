@@ -1,0 +1,39 @@
+{
+  "name": "sportsbook",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev -p 3001",
+    "dev:container": "webpack --config webpack.container.cjs --watch --no-stats",
+    "build:container": "webpack --config webpack.container.cjs",
+    "build": "next build",
+    "start": "next start",
+    "lint": "eslint"
+  },
+  "dependencies": {
+    "@module-federation/enhanced": "^2.1.0",
+    "@openbet/config-schema": "workspace:^",
+    "@openbet/theme-engine": "workspace:^",
+    "@openbet/ui": "workspace:^",
+    "next": "16.1.6",
+    "react": "19.2.3",
+    "react-dom": "19.2.3"
+  },
+  "devDependencies": {
+    "@babel/core": "^7",
+    "@babel/preset-env": "^7",
+    "@babel/preset-react": "^7",
+    "@babel/preset-typescript": "^7",
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "^20",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "babel-loader": "^9",
+    "eslint": "^9",
+    "eslint-config-next": "16.1.6",
+    "tailwindcss": "^4",
+    "typescript": "^5",
+    "webpack": "^5",
+    "webpack-cli": "^5"
+  }
+}

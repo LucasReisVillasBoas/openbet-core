@@ -1,134 +1,83 @@
-# OpenBet Core — Claude Instructions
+# OpenBet Core
 
-## O que é este projeto
-
-OpenBet Core é um **framework white-label para plataformas de betting**. Ele fornece a infraestrutura base (configuração, temas, componentes, microfrontends) para que múltiplos clientes (operadores de apostas) possam ter produtos distintos a partir de um único repositório.
-
-A premissa central: **um único core, N marcas**. A diferenciação entre clientes acontece exclusivamente via configuração (`ClientConfig`) e tokens de tema (CSS Custom Properties) — nunca via código condicional espalhado.
-
----
+## O que é
+Framework open source para construir plataformas de apostas
+esportivas white-label. Um único codebase, múltiplos operadores,
+cada um com identidade visual e features próprias controladas
+por um arquivo JSON de configuração.
 
 ## Stack
-
-| Camada | Tecnologia |
-|---|---|
-| Monorepo | Turborepo + pnpm workspaces |
-| Linguagem | TypeScript (strict mode obrigatório) |
-| Validação de config | Zod |
-| Bundler | Rspack |
-| Microfrontends | Module Federation 2.0 |
-| UI | React 18 |
-| Estilização | Tailwind CSS + CSS Custom Properties |
-
----
+- Turborepo + pnpm workspaces
+- TypeScript strict em todos os pacotes
+- Zod — validação de schemas em runtime
+- React 18 + Next.js 14 App Router
+- Tailwind CSS + CSS Custom Properties
+- Rspack + Module Federation 2.0
+- Storybook 8
 
 ## Estrutura do monorepo
-
-```
-openbet-core/
-├── apps/
-│   ├── shell/          # Host MF — carrega os remotes, aplica tema, autentica
-│   ├── sportsbook/     # Remote MF — módulo de esportes
-│   └── casino/         # Remote MF — módulo de cassino
-├── packages/
-│   ├── config-schema/  # Zod schema + TypeScript type de ClientConfig
-│   ├── theme-engine/   # Lê ClientConfig e injeta CSS vars no DOM
-│   ├── ui/             # Biblioteca de componentes React compartilhados
-│   ├── i18n/           # Internacionalização
-│   └── utils/          # Utilitários puros sem dependências de framework
-├── turbo.json
-├── pnpm-workspace.yaml
-└── package.json
-```
-
-### Como os pacotes se dependem entre si
-
-```
-apps/* → packages/ui → packages/theme-engine → packages/config-schema
-                     ↘ packages/utils
-apps/* → packages/i18n → packages/config-schema
-apps/* → packages/config-schema
-```
-
-Regra de ouro: **dependências só fluem "para baixo"** (apps dependem de packages, packages de nível superior dependem de packages de nível inferior). Nunca o contrário.
-
----
+- apps/shell          → Host MF — orquestra os remotes
+- apps/sportsbook     → Remote MF — expõe componentes
+- packages/config-schema  → Zod schema + TypeScript types
+- packages/theme-engine   → Aplica ClientConfig como CSS vars
+- packages/ui             → Design system — componentes React
+- clients/                → JSON de configuração por operador
 
 ## Regras invioláveis
+1. NUNCA hardcode cor em componente — toda cor via CSS Custom Property
+2. NUNCA importar de apps/ dentro de packages/
+3. NUNCA usar ClientConfig sem validar com Zod primeiro
+4. URLs de remotes MF SEMPRE vêm do ClientConfig — nunca hardcoded
+5. Todo componente React TEM stories para todos os estados
+6. packages/config-schema: dependência permitida apenas zod
+7. packages/theme-engine: dependência permitida apenas @openbet/config-schema
+8. Shared dependencies no MF SEMPRE como singleton: true
 
-### Dependências
-- **Nunca instalar dependências fora do workspace correto.** Se um pacote precisa de algo, instala com `pnpm add <dep> --filter @openbet/<pacote>`.
-- Dependências que são usadas por apenas um pacote ficam no `package.json` daquele pacote — não no root.
+## Decisões de arquitetura tomadas
+- ADR-001: CSS Custom Properties como contrato de tema
+  CSS vars são injetadas no :root pelo ThemeEngine. Componentes
+  consomem vars, nunca valores diretos. Trocar tema = trocar config.
 
-### Imports
-- **Nunca importar de `apps/` dentro de `packages/`.** O fluxo de dependência é unidirecional: apps consomem packages, nunca o inverso.
-- Imports entre packages devem usar o nome do pacote (`@openbet/ui`), nunca caminhos relativos entre diretórios de packages distintos.
+- ADR-002: ClientConfig como fonte única de verdade
+  Tudo que um cliente pode customizar está no ClientConfigSchema.
+  Adicionar cliente = criar JSON. Sem código novo.
 
-### Configuração
-- **Sempre validar configs com Zod antes de usar.** Nunca usar `as ClientConfig` sem passar pelo `ClientConfigSchema.parse()` ou `safeParse()`.
-- Toda config de cliente deve satisfazer o contrato definido em `packages/config-schema`.
+- ADR-003: Remote URLs dinâmicas via ClientConfig
+  O shell lê URLs dos remotes do ClientConfig. Clientes diferentes
+  podem ter remotes em versões diferentes sem conflito.
 
-### Tema
-- **CSS vars são o único mecanismo de tema.** Nunca hardcode de cor, fonte ou espaçamento em componentes.
-- Correto: `color: var(--color-brand-primary)`
-- Errado: `color: #1a56db` ou `color: theme('colors.blue.600')`
-- Quem injeta as vars é exclusivamente o `theme-engine`. Componentes só consomem.
+- ADR-004: Module Federation Host (Shell) Architecture
+  Q1: Usar @module-federation/enhanced (MF 2.0) — não o legado nextjs-mf.
+  Alinhado com a stack declarada (MF 2.0) e suporta remotes dinâmicos em runtime.
+  Q2: NEXT_PUBLIC_CLIENT_ID como seletor de cliente — variável de ambiente
+  no .env.local. Sem infraestrutura de DNS ou proxy. Ideal para demo/portfólio.
+  Q3: URLs dos remotes definidas em clients/*.config.json, validadas via Zod,
+  extraídas por getRemotes(config) em lib/remote-registry.ts, passadas ao
+  NextFederationPlugin como factory function — nunca hardcoded no código-fonte.
+  Q4: Estrutura apps/shell aprovada com duas correções: lib/client-config.ts
+  é server-only (sem 'use client'); tsconfig.json deve declarar path alias
+  para ../../clients/. ThemeProvider.tsx é o único módulo client, recebe
+  ClientConfig como prop do layout server e chama themeEngine.apply().
 
-### TypeScript
-- `strict: true` é obrigatório em todos os pacotes. Nunca desabilitar com `@ts-ignore` sem comentário explicativo e aprovação em PR.
-- Prefira tipos explícitos em assinaturas públicas de funções. Evite `any`.
+## Clientes ativos
+- client-alpha → AlphaBet (verde escuro, #1A7A4A)
+- client-beta  → BetNova (azul/roxo, #4F46E5)
 
----
+## Estado atual
+- packages/config-schema → buildando, schema completo
+- packages/theme-engine  → buildando, ThemeEngine pronto
+- packages/ui            → ainda não criado
+- apps/shell             → ainda não criado
+- apps/sportsbook        → ainda não criado
 
-## Convenções de nomenclatura
+## Como rodar
+pnpm install     → instala todas as dependências
+pnpm build       → builda todos os pacotes em ordem
+pnpm dev         → sobe todos os pacotes em watch mode
 
-| Artefato | Convenção | Exemplo |
-|---|---|---|
-| Componentes React | PascalCase | `BetSlipCard`, `OddsDisplay` |
-| Pacotes | kebab-case | `@openbet/theme-engine` |
-| Funções e variáveis | camelCase | `applyTheme`, `clientConfig` |
-| Arquivos de componente | PascalCase | `BetSlipCard.tsx` |
-| Arquivos de utilitário | kebab-case | `format-odds.ts` |
-| CSS Custom Properties | kebab-case com prefixo `--` | `--color-brand-primary` |
-| Variáveis de ambiente | SCREAMING_SNAKE_CASE | `VITE_API_URL` |
-
----
-
-## Como rodar, buildar e testar
-
-```bash
-# Instalar dependências
-pnpm install
-
-# Dev (todos os apps e packages em watch)
-pnpm dev
-
-# Dev de um app específico
-pnpm dev --filter @openbet/shell
-
-# Build completo (Turborepo gerencia a ordem)
-pnpm build
-
-# Build de um pacote específico e suas dependências
-pnpm build --filter @openbet/ui...
-
-# Testes
-pnpm test                          # todos
-pnpm test --filter @openbet/ui     # pacote específico
-
-# Type check
-pnpm typecheck
-
-# Lint
-pnpm lint
-```
-
-### Pipeline do Turborepo
-
-O `turbo.json` define a ordem de execução. A regra é:
-1. `config-schema` e `utils` são buildados primeiro (sem dependências internas)
-2. `theme-engine` depende de `config-schema`
-3. `ui` depende de `theme-engine` e `utils`
-4. `apps/*` dependem de tudo acima
-
-Nunca rode `tsc` ou `rspack` diretamente em packages isolados — use `turbo` para garantir que as dependências estejam buildadas na ordem certa.
+## Convenções
+- Componentes React: PascalCase (OddsButton, MatchCard)
+- Pacotes: kebab-case (@openbet/config-schema)
+- Funções e variáveis: camelCase (buildCSSVars, themeEngine)
+- CSS vars: --color-primary, --font-family, --radius
+- Commits: conventional commits (feat:, fix:, docs:, refactor:)

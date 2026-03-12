@@ -1,0 +1,49 @@
+{
+  "id": "sportsbook",
+  "name": "sportsbook",
+  "metaData": {
+    "name": "sportsbook",
+    "type": "app",
+    "buildInfo": {
+      "buildVersion": "0.1.0",
+      "buildName": "sportsbook"
+    },
+    "remoteEntry": {
+      "name": "remoteEntry.js",
+      "path": "",
+      "type": "global"
+    },
+    "types": {
+      "path": "",
+      "name": "",
+      "zip": "@mf-types.zip",
+      "api": "@mf-types.d.ts"
+    },
+    "globalName": "sportsbook",
+    "pluginVersion": "2.1.0",
+    "prefetchInterface": false,
+    "publicPath": "http://localhost:3001/"
+  },
+  "shared": [],
+  "remotes": [],
+  "exposes": [
+    {
+      "id": "sportsbook:SportsbookPage",
+      "name": "SportsbookPage",
+      "assets": {
+        "js": {
+          "sync": [
+            "vendors-node_modules_pnpm_react_19_2_3_node_modules_react_jsx-runtime_js.js",
+            "__federation_expose_SportsbookPage.js"
+          ],
+          "async": []
+        },
+        "css": {
+          "sync": [],
+          "async": []
+        }
+      },
+      "path": "./SportsbookPage"
+    }
+  ]
+}
