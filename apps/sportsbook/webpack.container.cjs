@@ -35,12 +35,6 @@ module.exports = {
 
   output: {
     path: path.resolve(__dirname, 'public'),
-    // publicPath must match the URL from which the shell fetches async chunks.
-    // In production this is set via NEXT_PUBLIC_SPORTSBOOK_URL (Vercel env var).
-    // Locally defaults to http://localhost:3001/.
-    publicPath: process.env.NEXT_PUBLIC_SPORTSBOOK_URL
-      ? `${process.env.NEXT_PUBLIC_SPORTSBOOK_URL}/`
-      : 'http://localhost:3001/',
     clean: false, // Don't wipe Next.js public assets on rebuild
   },
 
@@ -85,6 +79,10 @@ module.exports = {
     new ModuleFederationPlugin({
       name: 'sportsbook',
       filename: 'remoteEntry.js',
+
+      publicPath: process.env.VERCEL_URL
+        ? `https://${process.env.VERCEL_URL}/`
+        : 'http://localhost:3001/',
 
       exposes: {
         './SportsbookPage': './app/sportsbook-page.tsx',
