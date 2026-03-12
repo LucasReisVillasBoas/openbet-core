@@ -10,9 +10,7 @@ import type { Configuration } from 'webpack'
 //
 // webpack override: sets output.publicPath on the client bundle so that
 // dynamically loaded chunks (code-split pages, async imports) are requested
-// from the correct host in production.  NEXT_PUBLIC_SPORTSBOOK_URL is set as
-// a Vercel Environment Variable for the sportsbook project.  Locally it falls
-// back to http://localhost:3001/ via .env.local.
+// from the correct host in production.
 // ---------------------------------------------------------------------------
 
 const nextConfig: NextConfig = {
@@ -20,8 +18,9 @@ const nextConfig: NextConfig = {
 
   webpack(config: Configuration, { isServer }: { isServer: boolean }) {
     if (!isServer) {
-      const publicPath = process.env.NEXT_PUBLIC_SPORTSBOOK_URL
-        ? `${process.env.NEXT_PUBLIC_SPORTSBOOK_URL}/`
+      const isProd = process.env.NODE_ENV === 'production'
+      const publicPath = isProd
+        ? 'https://openbet-core-sportsbook.vercel.app/'
         : 'http://localhost:3001/'
 
       config.output = config.output ?? {}
