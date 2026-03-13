@@ -22,7 +22,7 @@ corepack prepare pnpm@9 --activate
 
 ```bash
 # 1. Clone
-git clone https://github.com/lucasreis10/openbet-core.git
+git clone https://github.com/LucasReisVillasBoas/openbet-core.git
 cd openbet-core
 
 # 2. Instale todas as dependencias

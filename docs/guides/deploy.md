@@ -74,7 +74,7 @@ O arquivo `apps/sportsbook/vercel.json` define o build completo:
 ### Configurar o projeto na Vercel
 
 1. Acesse [vercel.com](https://vercel.com) e crie um novo projeto
-2. Importe o repositorio `lucasreis10/openbet-core`
+2. Importe o repositorio `LucasReisVillasBoas/openbet-core`
 3. Configure **Root Directory** como `apps/sportsbook`
 4. O `vercel.json` sobrescreve o build command automaticamente
 5. Nenhuma variavel de ambiente e necessaria para o sportsbook em producao
@@ -88,6 +88,34 @@ Apos o deploy, verifique se o container MF foi gerado:
 curl https://openbet-core-sportsbook.vercel.app/remoteEntry.js | head -c 100
 # Deve retornar o inicio do bundle webpack, nao um erro 404
 ```
+
+---
+
+## Deploy do Storybook
+
+### Configuracao na Vercel
+
+O arquivo `packages/ui/vercel.json` define o build completo:
+
+```json
+{
+  "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter=@openbet/config-schema build && pnpm --filter=@openbet/theme-engine build && pnpm --filter=@openbet/ui build-storybook",
+  "outputDirectory": "storybook-static",
+  "installCommand": "echo skip",
+  "framework": null
+}
+```
+
+### Configurar o projeto na Vercel
+
+1. Crie um novo projeto na Vercel
+2. Importe o repositorio `LucasReisVillasBoas/openbet-core`
+3. Configure **Root Directory** como `packages/ui`
+4. O `vercel.json` sobrescreve o build command automaticamente
+5. Nenhuma variavel de ambiente necessaria
+6. Clique em **Deploy**
+
+O Storybook e servido como site estatico em https://openbet-core-ui.vercel.app — documentacao viva do design system com todos os componentes e estados.
 
 ---
 
@@ -109,7 +137,7 @@ O arquivo `apps/shell/vercel.json`:
 ### Configurar o projeto na Vercel
 
 1. Crie um novo projeto na Vercel
-2. Importe o mesmo repositorio `lucasreis10/openbet-core`
+2. Importe o mesmo repositorio `LucasReisVillasBoas/openbet-core`
 3. Configure **Root Directory** como `apps/shell`
 4. Adicione a variavel de ambiente `NEXT_PUBLIC_CLIENT_ID`:
    - Para o projeto GrandBet: `client-grandbet`

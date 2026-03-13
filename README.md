@@ -1,4 +1,4 @@
-[![CI](https://github.com/lucasreis10/openbet-core/actions/workflows/ci.yml/badge.svg)](https://github.com/lucasreis10/openbet-core/actions/workflows/ci.yml)
+[![CI](https://github.com/LucasReisVillasBoas/openbet-core/actions/workflows/ci.yml/badge.svg)](https://github.com/LucasReisVillasBoas/openbet-core/actions/workflows/ci.yml)
 ![License](https://img.shields.io/badge/license-MIT-blue.svg)
 
 # OpenBet Core — White-label Sports Betting Platform Framework
@@ -6,7 +6,7 @@
 *"Uma única codebase. N operadores. Zero código condicional."*
 
 **Demo ao vivo:** https://openbet-core-shell.vercel.app
-**Storybook:** (em breve)
+**Storybook:** https://openbet-core-ui.vercel.app
 
 ---
 
@@ -144,7 +144,7 @@ openbet-core/
 
 ```bash
 # 1. Clone o repositório
-git clone https://github.com/lucasreis10/openbet-core.git
+git clone https://github.com/LucasReisVillasBoas/openbet-core.git
 cd openbet-core
 
 # 2. Instale as dependências (requer pnpm 9+ e Node 20+)
