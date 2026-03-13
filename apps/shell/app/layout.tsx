@@ -10,6 +10,8 @@ export const metadata: Metadata = {
   description: 'White-label sports betting platform',
 }
 
+const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
+
 export default async function RootLayout({
   children,
 }: Readonly<{
@@ -49,33 +51,35 @@ export default async function RootLayout({
               >
                 OpenBet Core
               </span>
-              <ThemeToggle />
+              {isDemoMode && <ThemeToggle />}
             </header>
 
-            {/* Demo banner */}
-            <div
-              style={{
-                position: 'fixed',
-                top: '60px',
-                left: 0,
-                right: 0,
-                zIndex: 99,
-                background: 'var(--color-surface)',
-                borderBottom: '1px solid var(--color-border)',
-                padding: '8px 1.5rem',
-                fontSize: '0.75rem',
-                color: 'var(--color-text-muted)',
-                display: 'flex',
-                justifyContent: 'space-between',
-                fontFamily: 'var(--font-family)',
-              }}
-            >
-              <span>🏗️ OpenBet Core — Demo White-Label</span>
-              <span>Troque o tema no botão acima para ver a mágica</span>
-            </div>
+            {/* Demo banner — only in demo mode */}
+            {isDemoMode && (
+              <div
+                style={{
+                  position: 'fixed',
+                  top: '60px',
+                  left: 0,
+                  right: 0,
+                  zIndex: 99,
+                  background: 'var(--color-surface)',
+                  borderBottom: '1px solid var(--color-border)',
+                  padding: '8px 1.5rem',
+                  fontSize: '0.75rem',
+                  color: 'var(--color-text-muted)',
+                  display: 'flex',
+                  justifyContent: 'space-between',
+                  fontFamily: 'var(--font-family)',
+                }}
+              >
+                <span>🏗️ OpenBet Core — Demo White-Label</span>
+                <span>Troque o tema no botão acima para ver a mágica</span>
+              </div>
+            )}
 
-            {/* Content below fixed header (60px) + banner (~36px) */}
-            <div style={{ paddingTop: '96px' }}>{children}</div>
+            {/* paddingTop: 96px (header 60px + banner 36px) em demo mode, 64px caso contrário */}
+            <div style={{ paddingTop: isDemoMode ? '96px' : '64px' }}>{children}</div>
           </ThemeProvider>
         </ClientConfigProvider>
       </body>
