@@ -76,10 +76,7 @@ export default async function RootLayout({
 
               {/* Right controls */}
               <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                <Search
-                  size={20}
-                  style={{ color: 'var(--color-text-muted)', cursor: 'pointer' }}
-                />
+                <Search size={20} style={{ color: 'var(--color-text-muted)', cursor: 'pointer' }} />
                 {isDemoMode && <ThemeToggle />}
               </div>
             </header>

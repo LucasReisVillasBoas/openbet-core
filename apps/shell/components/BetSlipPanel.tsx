@@ -126,10 +126,7 @@ export function BetSlipPanel({ topOffset }: { topOffset: number }) {
                 gap: '12px',
               }}
             >
-              <ShoppingCart
-                size={32}
-                style={{ opacity: 0.3, color: 'var(--color-text-muted)' }}
-              />
+              <ShoppingCart size={32} style={{ opacity: 0.3, color: 'var(--color-text-muted)' }} />
               <span
                 style={{
                   fontWeight: 600,

@@ -82,20 +82,20 @@ export default function SportsbookPage() {
           maxWidth: '100%',
         }}
       >
-      {MOCK_MATCHES.map(match => (
-        <MatchCard
-          key={match.id}
-          homeTeam={match.homeTeam}
-          awayTeam={match.awayTeam}
-          league={match.league}
-          startTime={'startTime' in match ? match.startTime : undefined}
-          variant={match.variant}
-          isLive={'isLive' in match ? match.isLive : undefined}
-          minute={'minute' in match ? match.minute : undefined}
-          score={'score' in match ? match.score : undefined}
-          odds={match.odds}
-        />
-      ))}
+        {MOCK_MATCHES.map(match => (
+          <MatchCard
+            key={match.id}
+            homeTeam={match.homeTeam}
+            awayTeam={match.awayTeam}
+            league={match.league}
+            startTime={'startTime' in match ? match.startTime : undefined}
+            variant={match.variant}
+            isLive={'isLive' in match ? match.isLive : undefined}
+            minute={'minute' in match ? match.minute : undefined}
+            score={'score' in match ? match.score : undefined}
+            odds={match.odds}
+          />
+        ))}
       </div>
     </div>
   )

@@ -17,10 +17,10 @@ const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
 const TOP_OFFSET = isDemoMode ? 96 : 64
 
 const CASINO_GAMES = [
-  { name: 'Sweet Bonanza',    provider: 'Pragmatic Play', hot: true  },
+  { name: 'Sweet Bonanza', provider: 'Pragmatic Play', hot: true },
   { name: 'Gates of Olympus', provider: 'Pragmatic Play', hot: false },
-  { name: "Book of Dead",     provider: "Play'n GO",      hot: true  },
-  { name: 'Starburst',        provider: 'NetEnt',         hot: false },
+  { name: 'Book of Dead', provider: "Play'n GO", hot: true },
+  { name: 'Starburst', provider: 'NetEnt', hot: false },
 ]
 
 export default function Page() {
@@ -51,8 +51,8 @@ export default function Page() {
         <main
           style={{
             flex: 1,
-            paddingLeft: '244px',   /* 220px sidebar + 24px gap */
-            paddingRight: '344px',  /* 320px betslip + 24px gap */
+            paddingLeft: '244px' /* 220px sidebar + 24px gap */,
+            paddingRight: '344px' /* 320px betslip + 24px gap */,
             paddingTop: '24px',
             paddingBottom: '40px',
             minHeight: '100vh',
@@ -98,15 +98,9 @@ export default function Page() {
                   AO VIVO
                 </span>
               )}
-              {features.casino && (
-                <FeatureBadge color="var(--color-secondary)" label="CASINO" />
-              )}
-              {features.cashOut && (
-                <FeatureBadge color="var(--color-success)" label="CASH OUT" />
-              )}
-              {features.esports && (
-                <FeatureBadge color="var(--color-primary)" label="E-SPORTS" />
-              )}
+              {features.casino && <FeatureBadge color="var(--color-secondary)" label="CASINO" />}
+              {features.cashOut && <FeatureBadge color="var(--color-success)" label="CASH OUT" />}
+              {features.esports && <FeatureBadge color="var(--color-primary)" label="E-SPORTS" />}
             </div>
 
             {/* Ao Vivo section */}
@@ -168,13 +162,7 @@ export default function Page() {
 // Local helpers
 // ---------------------------------------------------------------------------
 
-function SectionHeader({
-  icon: Icon,
-  title,
-}: {
-  icon: React.ElementType
-  title: string
-}) {
+function SectionHeader({ icon: Icon, title }: { icon: React.ElementType; title: string }) {
   return (
     <div
       style={{
@@ -219,11 +207,7 @@ function FeatureBadge({ color, label }: { color: string; label: string }) {
   )
 }
 
-function CasinoCard({
-  game,
-}: {
-  game: { name: string; provider: string; hot: boolean }
-}) {
+function CasinoCard({ game }: { game: { name: string; provider: string; hot: boolean } }) {
   return (
     <div
       style={{

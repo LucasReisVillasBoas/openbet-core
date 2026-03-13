@@ -16,23 +16,18 @@ import {
 } from 'lucide-react'
 
 const SPORTS = [
-  { id: 'soccer',     label: 'Futebol',     Icon: CircleDot, active: true  },
-  { id: 'basketball', label: 'Basquete',    Icon: Circle,    active: false },
-  { id: 'tennis',     label: 'Tênis',       Icon: Activity,  active: false },
-  { id: 'esports',    label: 'E-Sports',    Icon: Gamepad2,  active: false },
-  { id: 'american',   label: 'Futebol Am.', Icon: Trophy,    active: false },
-  { id: 'hockey',     label: 'Hóquei',      Icon: Zap,       active: false },
-  { id: 'mma',        label: 'MMA',         Icon: Shield,    active: false },
-  { id: 'racing',     label: 'Corridas',    Icon: Flag,      active: false },
-  { id: 'favorites',  label: 'Favoritos',   Icon: Star,      active: false },
+  { id: 'soccer', label: 'Futebol', Icon: CircleDot, active: true },
+  { id: 'basketball', label: 'Basquete', Icon: Circle, active: false },
+  { id: 'tennis', label: 'Tênis', Icon: Activity, active: false },
+  { id: 'esports', label: 'E-Sports', Icon: Gamepad2, active: false },
+  { id: 'american', label: 'Futebol Am.', Icon: Trophy, active: false },
+  { id: 'hockey', label: 'Hóquei', Icon: Zap, active: false },
+  { id: 'mma', label: 'MMA', Icon: Shield, active: false },
+  { id: 'racing', label: 'Corridas', Icon: Flag, active: false },
+  { id: 'favorites', label: 'Favoritos', Icon: Star, active: false },
 ] as const
 
-const COMPETITIONS = [
-  'UEFA Champions League',
-  'Premier League',
-  'La Liga',
-  'Serie A',
-]
+const COMPETITIONS = ['UEFA Champions League', 'Premier League', 'La Liga', 'Serie A']
 
 export function SportsSidebar({ topOffset }: { topOffset: number }) {
   const [collapsed, setCollapsed] = useState(false)
@@ -79,10 +74,11 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
           flexShrink: 0,
         }}
       >
-        {collapsed
-          ? <ChevronRight size={16} color="var(--color-text-muted)" />
-          : <ChevronLeft size={16} color="var(--color-text-muted)" />
-        }
+        {collapsed ? (
+          <ChevronRight size={16} color="var(--color-text-muted)" />
+        ) : (
+          <ChevronLeft size={16} color="var(--color-text-muted)" />
+        )}
       </button>
 
       {/* Sports header — hidden when collapsed */}
@@ -198,10 +194,10 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
                 transition: 'background 200ms',
               }}
               onMouseEnter={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'var(--color-surface)'
+                ;(e.currentTarget as HTMLButtonElement).style.background = 'var(--color-surface)'
               }}
               onMouseLeave={e => {
-                (e.currentTarget as HTMLButtonElement).style.background = 'transparent'
+                ;(e.currentTarget as HTMLButtonElement).style.background = 'transparent'
               }}
             >
               {competition}
