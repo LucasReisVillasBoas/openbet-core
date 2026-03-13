@@ -1,0 +1,11 @@
+# Ignorar arquivos gerados na contagem de linguagens
+apps/sportsbook/public/*.js linguist-generated=true
+apps/sportsbook/public/*.js linguist-vendored=true
+**/dist/**/*.js linguist-generated=true
+**/.next/**/*.js linguist-generated=true
+**/storybook-static/**/*.js linguist-generated=true
+scripts/*.ts linguist-detectable=false
+
+# Forçar TypeScript como linguagem principal
+*.ts linguist-detectable=true
+*.tsx linguist-detectable=true
