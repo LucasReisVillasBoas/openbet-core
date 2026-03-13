@@ -34,3 +34,6 @@ Define o contrato entre operadores e a plataforma.
 3. Atualizar clients/*.config.json para incluir o novo campo
 4. Rodar pnpm build e revalidar os configs
 5. Documentar a mudança neste CLAUDE.md
+
+## Documentação completa
+→ [docs/packages/config-schema.md](../../docs/packages/config-schema.md)

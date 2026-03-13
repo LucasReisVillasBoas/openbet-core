@@ -96,6 +96,12 @@ Before finalizing any output, self-verify:
 - When you find a violation, clearly state the violation, its risk, and the corrected implementation
 - Ask clarifying questions when the scope of a remote or the ClientConfig API shape is ambiguous
 
+## Documentação de referência
+- [docs/architecture/module-federation.md](../../docs/architecture/module-federation.md) — Arquitetura MF completa
+- [docs/architecture/adr/ADR-003.md](../../docs/architecture/adr/ADR-003.md) — ADR-003: Remote URLs dinâmicas
+- [docs/architecture/adr/ADR-004.md](../../docs/architecture/adr/ADR-004.md) — ADR-004: Module Federation Host
+- [docs/guides/deploy.md](../../docs/guides/deploy.md) — Deploy e publicPath na Vercel
+
 **Update your agent memory** as you discover Module Federation patterns, ClientConfig API shapes, remote naming conventions, shared dependency version policies, ErrorBoundary implementations, and architectural decisions specific to OpenBet Core. This builds institutional knowledge across conversations.
 
 Examples of what to record:

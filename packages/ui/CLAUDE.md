@@ -34,3 +34,6 @@ Cores: --color-primary, --color-primary-hover, --color-secondary,
 --color-odds-up, --color-odds-down
 Tipografia: --font-family, --font-family-mono, --font-size-base
 Forma: --radius
+
+## Documentação completa
+→ [docs/guides/adding-a-component.md](../../docs/guides/adding-a-component.md)

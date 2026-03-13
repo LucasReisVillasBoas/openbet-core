@@ -81,3 +81,24 @@ pnpm dev         → sobe todos os pacotes em watch mode
 - Funções e variáveis: camelCase (buildCSSVars, themeEngine)
 - CSS vars: --color-primary, --font-family, --radius
 - Commits: conventional commits (feat:, fix:, docs:, refactor:)
+
+## Documentação
+Documentação completa disponível em docs/:
+
+| Arquivo | Conteúdo |
+|---------|----------|
+| [docs/README.md](docs/README.md) | Visão geral do projeto |
+| [docs/architecture/overview.md](docs/architecture/overview.md) | Arquitetura geral |
+| [docs/architecture/module-federation.md](docs/architecture/module-federation.md) | Module Federation |
+| [docs/architecture/theme-engine.md](docs/architecture/theme-engine.md) | Theme Engine |
+| [docs/architecture/adr/ADR-001.md](docs/architecture/adr/ADR-001.md) | ADR-001: CSS Custom Properties |
+| [docs/architecture/adr/ADR-002.md](docs/architecture/adr/ADR-002.md) | ADR-002: ClientConfig como fonte única |
+| [docs/architecture/adr/ADR-003.md](docs/architecture/adr/ADR-003.md) | ADR-003: Remote URLs dinâmicas |
+| [docs/architecture/adr/ADR-004.md](docs/architecture/adr/ADR-004.md) | ADR-004: Module Federation Host |
+| [docs/packages/config-schema.md](docs/packages/config-schema.md) | Pacote config-schema |
+| [docs/packages/theme-engine.md](docs/packages/theme-engine.md) | Pacote theme-engine |
+| [docs/guides/getting-started.md](docs/guides/getting-started.md) | Guia de início |
+| [docs/guides/adding-a-client.md](docs/guides/adding-a-client.md) | Adicionar cliente |
+| [docs/guides/adding-a-component.md](docs/guides/adding-a-component.md) | Adicionar componente |
+| [docs/guides/deploy.md](docs/guides/deploy.md) | Deploy na Vercel |
+| [docs/decisions.md](docs/decisions.md) | Log de decisões |

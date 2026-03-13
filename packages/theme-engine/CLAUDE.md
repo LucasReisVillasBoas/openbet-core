@@ -27,8 +27,8 @@ em runtime via CSS Custom Properties. Trocar de tema = trocar config.
 
 ## Como usar
 import { themeEngine } from '@openbet/theme-engine'
-import alphaConfig from '../../clients/alpha.config.json'
-themeEngine.apply(alphaConfig) // injeta todas as CSS vars no :root
+import grandbetConfig from '../../clients/grandbet.config.json'
+themeEngine.apply(grandbetConfig) // injeta todas as CSS vars no :root
 
 ## Comportamento do apply()
 1. Converte config em CSS vars via buildCSSVars()
