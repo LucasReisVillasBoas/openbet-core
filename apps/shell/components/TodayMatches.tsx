@@ -25,7 +25,13 @@ const TODAY_MATCHES = [
 
 export function TodayMatches() {
   return (
-    <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+    <div
+      style={{
+        display: 'grid',
+        gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+        gap: '16px',
+      }}
+    >
       {TODAY_MATCHES.map(match => (
         <MatchCard
           key={match.id}

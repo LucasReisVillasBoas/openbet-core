@@ -1,4 +1,5 @@
 import type { Metadata } from 'next'
+import { Search } from 'lucide-react'
 import { getClientConfig } from '@/lib/client-config'
 import { ThemeProvider } from '@/components/ThemeProvider'
 import { ThemeToggle } from '@/components/ThemeToggle'
@@ -42,16 +43,45 @@ export default async function RootLayout({
                 fontFamily: 'var(--font-family)',
               }}
             >
-              <span
-                style={{
-                  fontWeight: 700,
-                  fontSize: '1.125rem',
-                  color: 'var(--color-text)',
-                }}
-              >
-                OpenBet Core
-              </span>
-              {isDemoMode && <ThemeToggle />}
+              {/* Logo + brand name */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <div
+                  style={{
+                    width: '32px',
+                    height: '32px',
+                    background: 'var(--color-primary)',
+                    borderRadius: '8px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontSize: '1rem',
+                    fontWeight: 800,
+                    color: 'white',
+                    flexShrink: 0,
+                    fontFamily: 'var(--font-family)',
+                  }}
+                >
+                  {config.brand.name[0]}
+                </div>
+                <span
+                  style={{
+                    fontWeight: 700,
+                    fontSize: '1.125rem',
+                    color: 'var(--color-text)',
+                  }}
+                >
+                  {config.brand.name}
+                </span>
+              </div>
+
+              {/* Right controls */}
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                <Search
+                  size={20}
+                  style={{ color: 'var(--color-text-muted)', cursor: 'pointer' }}
+                />
+                {isDemoMode && <ThemeToggle />}
+              </div>
             </header>
 
             {/* Demo banner — only in demo mode */}
@@ -73,7 +103,7 @@ export default async function RootLayout({
                   fontFamily: 'var(--font-family)',
                 }}
               >
-                <span>🏗️ OpenBet Core — Demo White-Label</span>
+                <span>OpenBet Core — Demo White-Label</span>
                 <span>Troque o tema no botão acima para ver a mágica</span>
               </div>
             )}

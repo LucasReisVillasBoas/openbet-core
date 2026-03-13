@@ -74,6 +74,14 @@ export default function SportsbookPage() {
         Destaques
       </h2>
 
+      <div
+        style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(auto-fill, minmax(340px, 1fr))',
+          gap: '16px',
+          maxWidth: '100%',
+        }}
+      >
       {MOCK_MATCHES.map(match => (
         <MatchCard
           key={match.id}
@@ -88,6 +96,7 @@ export default function SportsbookPage() {
           odds={match.odds}
         />
       ))}
+      </div>
     </div>
   )
 }
