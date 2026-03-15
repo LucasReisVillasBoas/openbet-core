@@ -83,15 +83,16 @@ function TeamsRow({ homeTeam, awayTeam, variant, score, startTime }: TeamsRowPro
 interface OddsRowProps {
   odds: MatchCardOdds
   onOddsClick?: ((market: 'home' | 'draw' | 'away') => void) | undefined
+  selectedMarkets?: Set<'home' | 'draw' | 'away'> | undefined
 }
 
-function OddsRow({ odds, onOddsClick }: OddsRowProps) {
+function OddsRow({ odds, onOddsClick, selectedMarkets }: OddsRowProps) {
   return (
     <div style={oddsRowStyle}>
       <OddsButton
         label="Casa"
         odds={odds.home}
-        state="default"
+        state={selectedMarkets?.has('home') ? 'selected' : 'default'}
         size="sm"
         onClick={() => onOddsClick?.('home')}
       />
@@ -99,7 +100,7 @@ function OddsRow({ odds, onOddsClick }: OddsRowProps) {
         <OddsButton
           label="Empate"
           odds={odds.draw}
-          state="default"
+          state={selectedMarkets?.has('draw') ? 'selected' : 'default'}
           size="sm"
           onClick={() => onOddsClick?.('draw')}
         />
@@ -107,7 +108,7 @@ function OddsRow({ odds, onOddsClick }: OddsRowProps) {
       <OddsButton
         label="Fora"
         odds={odds.away}
-        state="default"
+        state={selectedMarkets?.has('away') ? 'selected' : 'default'}
         size="sm"
         onClick={() => onOddsClick?.('away')}
       />
@@ -130,6 +131,7 @@ export function MatchCard({
   minute,
   odds,
   onOddsClick,
+  selectedMarkets,
 }: MatchCardProps) {
   const showLive = isLive || variant === 'live'
   const cardStyle = getCardStyle(variant)
@@ -144,7 +146,9 @@ export function MatchCard({
         score={score}
         startTime={startTime}
       />
-      {odds !== undefined && <OddsRow odds={odds} onOddsClick={onOddsClick} />}
+      {odds !== undefined && (
+        <OddsRow odds={odds} onOddsClick={onOddsClick} selectedMarkets={selectedMarkets} />
+      )}
     </div>
   )
 }

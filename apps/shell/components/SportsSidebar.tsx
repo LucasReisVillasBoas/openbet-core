@@ -51,46 +51,19 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
         overflowY: 'auto',
       }}
     >
-      {/* Collapse toggle button */}
-      <button
-        type="button"
-        onClick={() => setCollapsed(c => !c)}
-        title={collapsed ? 'Expandir sidebar' : 'Recolher sidebar'}
+      {/* Header — contains label (when expanded) and collapse toggle */}
+      <div
         style={{
-          position: 'absolute',
-          right: '-12px',
-          top: '20px',
-          zIndex: 10,
-          width: '24px',
-          height: '24px',
-          background: 'var(--color-surface)',
-          border: '1px solid var(--color-border)',
-          borderRadius: '50%',
           display: 'flex',
           alignItems: 'center',
-          justifyContent: 'center',
-          cursor: 'pointer',
-          padding: 0,
+          justifyContent: collapsed ? 'center' : 'space-between',
+          padding: '16px 12px 10px',
+          borderBottom: '1px solid var(--color-border)',
+          marginBottom: '8px',
           flexShrink: 0,
         }}
       >
-        {collapsed ? (
-          <ChevronRight size={16} color="var(--color-text-muted)" />
-        ) : (
-          <ChevronLeft size={16} color="var(--color-text-muted)" />
-        )}
-      </button>
-
-      {/* Sports header — hidden when collapsed */}
-      {!collapsed && (
-        <div
-          style={{
-            padding: '16px 12px 10px',
-            borderBottom: '1px solid var(--color-border)',
-            marginBottom: '8px',
-            flexShrink: 0,
-          }}
-        >
+        {!collapsed && (
           <span
             style={{
               fontSize: '0.625rem',
@@ -102,8 +75,36 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
           >
             Esportes
           </span>
-        </div>
-      )}
+        )}
+
+        {/* Collapse toggle button — lives inside the header */}
+        <button
+          type="button"
+          onClick={() => setCollapsed(c => !c)}
+          title={collapsed ? 'Expandir sidebar' : 'Recolher sidebar'}
+          style={{
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer',
+            padding: '2px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'var(--color-text-muted)',
+            flexShrink: 0,
+            borderRadius: '4px',
+            transition: 'color 150ms',
+          }}
+          onMouseEnter={e => {
+            ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text)'
+          }}
+          onMouseLeave={e => {
+            ;(e.currentTarget as HTMLButtonElement).style.color = 'var(--color-text-muted)'
+          }}
+        >
+          {collapsed ? <ChevronRight size={18} /> : <ChevronLeft size={18} />}
+        </button>
+      </div>
 
       {/* Sports items */}
       <div
@@ -111,7 +112,7 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
           display: 'flex',
           flexDirection: 'column',
           gap: '2px',
-          padding: collapsed ? '16px 4px 0' : '0 8px',
+          padding: collapsed ? '0 4px' : '0 8px',
           flexShrink: 0,
         }}
       >
@@ -131,7 +132,7 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
                 padding: collapsed ? '10px' : '10px 12px',
                 cursor: 'pointer',
                 background: isActive ? 'var(--color-primary)' : 'transparent',
-                color: isActive ? 'white' : 'var(--color-text-muted)',
+                color: isActive ? '#fff' : 'var(--color-text-muted)', // #fff on primary bg
                 fontSize: '0.875rem',
                 fontFamily: 'var(--font-family)',
                 border: 'none',

@@ -2,25 +2,36 @@
 
 import { useState } from 'react'
 import { ChevronRight, ChevronLeft, ShoppingCart } from 'lucide-react'
-import { BetSlip, type BetSlipSelection } from '@openbet/ui'
+import { BetSlip } from '@openbet/ui'
+import type { BetSlipSelection } from '@openbet/ui'
+import { useBetSlip } from '@/lib/bet-slip-context'
 
 export function BetSlipPanel({ topOffset }: { topOffset: number }) {
   const [collapsed, setCollapsed] = useState(false)
-  const [selections, setSelections] = useState<BetSlipSelection[]>([])
-  const [stake, setStake] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
+  const [confirmed, setConfirmed] = useState(false)
   const [mode, setMode] = useState<'single' | 'multiple'>('single')
 
-  function handleRemove(id: string) {
-    setSelections(prev => prev.filter(s => s.id !== id))
-  }
+  const { selections, removeSelection, clearSelections, stake, setStake } = useBetSlip()
+
+  // Map context selections to the BetSlipSelection shape expected by @openbet/ui BetSlip
+  const slipSelections: BetSlipSelection[] = selections.map(s => ({
+    id: s.id,
+    eventName: s.eventName,
+    marketName: s.marketName,
+    selectionName: s.selectionName,
+    odds: s.odds,
+  }))
 
   function handlePlaceBet() {
     setIsLoading(true)
     setTimeout(() => {
-      setSelections([])
-      setStake(0)
       setIsLoading(false)
+      setConfirmed(true)
+      clearSelections()
+      setTimeout(() => {
+        setConfirmed(false)
+      }, 2000)
     }, 1500)
   }
 
@@ -91,6 +102,21 @@ export function BetSlipPanel({ topOffset }: { topOffset: number }) {
             }}
           >
             Sua Aposta
+            {selections.length > 0 && (
+              <span
+                style={{
+                  marginLeft: '6px',
+                  background: 'var(--color-primary)',
+                  color: '#fff', // #fff on primary background
+                  borderRadius: '10px',
+                  padding: '1px 6px',
+                  fontSize: '0.625rem',
+                  fontWeight: 700,
+                }}
+              >
+                {selections.length}
+              </span>
+            )}
           </span>
           <button
             type="button"
@@ -113,7 +139,33 @@ export function BetSlipPanel({ topOffset }: { topOffset: number }) {
 
         {/* Content */}
         <div style={{ flex: 1, overflowY: 'auto' }}>
-          {selections.length === 0 ? (
+          {confirmed ? (
+            /* Confirmed state */
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
+                justifyContent: 'center',
+                height: '100%',
+                padding: '32px 24px',
+                gap: '12px',
+              }}
+            >
+              <span style={{ fontSize: '2rem' }}>✓</span>
+              <span
+                style={{
+                  fontWeight: 600,
+                  fontSize: '0.9375rem',
+                  color: 'var(--color-success)',
+                  fontFamily: 'var(--font-family)',
+                  textAlign: 'center',
+                }}
+              >
+                Bet confirmed!
+              </span>
+            </div>
+          ) : selections.length === 0 ? (
             /* Empty state */
             <div
               style={{
@@ -151,11 +203,11 @@ export function BetSlipPanel({ topOffset }: { topOffset: number }) {
             </div>
           ) : (
             <BetSlip
-              selections={selections}
+              selections={slipSelections}
               stake={stake}
               mode={mode}
               isLoading={isLoading}
-              onRemoveSelection={handleRemove}
+              onRemoveSelection={removeSelection}
               onStakeChange={setStake}
               onPlaceBet={handlePlaceBet}
               onModeChange={setMode}

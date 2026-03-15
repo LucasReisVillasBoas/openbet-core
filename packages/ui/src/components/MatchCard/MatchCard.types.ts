@@ -43,4 +43,9 @@ export interface MatchCardProps {
   odds?: MatchCardOdds
   /** Called with the market key when the user clicks an odds button */
   onOddsClick?: (market: 'home' | 'draw' | 'away') => void
+  /**
+   * Set of market keys that are currently selected (e.g. from a bet slip).
+   * Each key in this set will render the corresponding OddsButton as `state='selected'`.
+   */
+  selectedMarkets?: Set<'home' | 'draw' | 'away'>
 }

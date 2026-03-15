@@ -70,3 +70,15 @@ selected OddsButton on `--color-primary`). Must always be accompanied by an inli
   - Sub-components (not exported): HeaderRow, TeamsRow, OddsRow
   - `isLive` prop OR `variant='live'` both trigger live badge display
   - Draw market hidden when `odds.draw` is undefined (supports 2-way markets)
+  - `selectedMarkets?: Set<'home' | 'draw' | 'away'>` controls OddsButton selected state
+  - `onOddsClick?: (market: 'home' | 'draw' | 'away') => void` for click handling
+
+## apps/shell Architecture
+- Components are FLAT files in `apps/shell/components/` (not subdirectories)
+- `apps/shell/lib/bet-slip-context.tsx` — BetSlipProvider + useBetSlip hook
+  - `BetSelection`: { id, matchId, eventName, marketName, selectionName, odds }
+  - `addSelection` toggles: re-clicking same id deselects (toggle semantics)
+  - Max 10 selections enforced
+- `BetSlipPanel.tsx` maps context BetSelection → BetSlipSelection for @openbet/ui BetSlip
+- `TodayMatches.tsx` uses `useBetSlip()` + passes `selectedMarkets` Set to each MatchCard
+- Provider nesting in layout: ClientConfigProvider > ThemeProvider > BetSlipProvider

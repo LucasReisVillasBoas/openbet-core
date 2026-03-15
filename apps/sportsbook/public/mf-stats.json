@@ -22,7 +22,7 @@
     "globalName": "sportsbook",
     "pluginVersion": "2.1.0",
     "prefetchInterface": false,
-    "publicPath": "https://openbet-core-sportsbook.vercel.app/"
+    "publicPath": "http://localhost:3001/"
   },
   "shared": [],
   "remotes": [],
@@ -36,6 +36,7 @@
       "assets": {
         "js": {
           "sync": [
+            "vendors-node_modules_pnpm_react_19_2_3_node_modules_react_jsx-runtime_js.js",
             "__federation_expose_SportsbookPage.js"
           ],
           "async": []
