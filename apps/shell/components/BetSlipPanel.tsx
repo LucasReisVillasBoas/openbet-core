@@ -1,6 +1,6 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronRight, ChevronLeft, ShoppingCart } from 'lucide-react'
 import { BetSlip } from '@openbet/ui'
 import type { BetSlipSelection } from '@openbet/ui'
@@ -13,6 +13,11 @@ export function BetSlipPanel({ topOffset }: { topOffset: number }) {
   const [mode, setMode] = useState<'single' | 'multiple'>('single')
 
   const { selections, removeSelection, clearSelections, stake, setStake } = useBetSlip()
+
+  // Auto-switch to multiple when 2+ selections, back to single when only 1
+  useEffect(() => {
+    setMode(selections.length >= 2 ? 'multiple' : 'single')
+  }, [selections.length])
 
   // Map context selections to the BetSlipSelection shape expected by @openbet/ui BetSlip
   const slipSelections: BetSlipSelection[] = selections.map(s => ({
