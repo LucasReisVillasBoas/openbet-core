@@ -10,28 +10,35 @@ import {
   Gamepad2,
   Trophy,
   Zap,
-  Shield,
   Flag,
-  Star,
+  Shield,
 } from 'lucide-react'
+import type { LucideIcon } from 'lucide-react'
+import { useSportFilter } from '@/lib/sport-filter-context'
 
-const SPORTS = [
-  { id: 'soccer', label: 'Futebol', Icon: CircleDot, active: true },
-  { id: 'basketball', label: 'Basquete', Icon: Circle, active: false },
-  { id: 'tennis', label: 'Tênis', Icon: Activity, active: false },
-  { id: 'esports', label: 'E-Sports', Icon: Gamepad2, active: false },
-  { id: 'american', label: 'Futebol Am.', Icon: Trophy, active: false },
-  { id: 'hockey', label: 'Hóquei', Icon: Zap, active: false },
-  { id: 'mma', label: 'MMA', Icon: Shield, active: false },
-  { id: 'racing', label: 'Corridas', Icon: Flag, active: false },
-  { id: 'favorites', label: 'Favoritos', Icon: Star, active: false },
-] as const
+interface Sport {
+  id: string
+  name: string
+  liveCount: number
+  Icon: LucideIcon
+}
 
-const COMPETITIONS = ['UEFA Champions League', 'Premier League', 'La Liga', 'Serie A']
+const SPORTS: Sport[] = [
+  { id: 'football', name: 'Football', liveCount: 12, Icon: CircleDot },
+  { id: 'basketball', name: 'Basketball', liveCount: 8, Icon: Circle },
+  { id: 'tennis', name: 'Tennis', liveCount: 5, Icon: Activity },
+  { id: 'volleyball', name: 'Volleyball', liveCount: 3, Icon: Trophy },
+  { id: 'esports', name: 'E-Sports', liveCount: 15, Icon: Gamepad2 },
+  { id: 'american-football', name: 'Am. Football', liveCount: 2, Icon: Shield },
+  { id: 'baseball', name: 'Baseball', liveCount: 0, Icon: Flag },
+  { id: 'hockey', name: 'Hockey', liveCount: 4, Icon: Zap },
+]
+
+const COMPETITIONS = ['UEFA Champions League', 'Premier League', 'La Liga', 'Brasileirão']
 
 export function SportsSidebar({ topOffset }: { topOffset: number }) {
   const [collapsed, setCollapsed] = useState(false)
-  const [activeId, setActiveId] = useState<string>('soccer')
+  const { activeSport, setActiveSport } = useSportFilter()
 
   return (
     <aside
@@ -73,15 +80,15 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
               color: 'var(--color-text-muted)',
             }}
           >
-            Esportes
+            Sports
           </span>
         )}
 
-        {/* Collapse toggle button — lives inside the header */}
+        {/* Collapse toggle button */}
         <button
           type="button"
           onClick={() => setCollapsed(c => !c)}
-          title={collapsed ? 'Expandir sidebar' : 'Recolher sidebar'}
+          title={collapsed ? 'Expand sidebar' : 'Collapse sidebar'}
           style={{
             background: 'transparent',
             border: 'none',
@@ -116,14 +123,15 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
           flexShrink: 0,
         }}
       >
-        {SPORTS.map(({ id, label, Icon }) => {
-          const isActive = activeId === id
+        {SPORTS.map(({ id, name, liveCount, Icon }) => {
+          const isActive = activeSport === id
+          const isLive = liveCount > 0
           return (
             <button
               key={id}
               type="button"
-              onClick={() => setActiveId(id)}
-              title={collapsed ? label : undefined}
+              onClick={() => setActiveSport(id)}
+              title={collapsed ? name : undefined}
               style={{
                 display: 'flex',
                 alignItems: 'center',
@@ -141,10 +149,51 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
                 textAlign: 'left',
                 width: '100%',
                 whiteSpace: 'nowrap',
+                position: 'relative',
               }}
             >
-              <Icon size={18} />
-              {!collapsed && <span>{label}</span>}
+              {/* Sport icon with optional live dot overlay */}
+              <span style={{ position: 'relative', flexShrink: 0, display: 'flex' }}>
+                <Icon size={18} />
+                {isLive && (
+                  <span
+                    style={{
+                      position: 'absolute',
+                      top: '-3px',
+                      right: '-3px',
+                      width: '7px',
+                      height: '7px',
+                      borderRadius: '50%',
+                      background: 'var(--color-error)',
+                      border: isActive
+                        ? '1px solid #fff'
+                        : '1px solid var(--color-background-card)', // #fff on primary bg
+                    }}
+                  />
+                )}
+              </span>
+
+              {/* Label + live count — only when expanded */}
+              {!collapsed && (
+                <>
+                  <span style={{ flex: 1 }}>{name}</span>
+                  {isLive && (
+                    <span
+                      style={{
+                        fontSize: '0.625rem',
+                        fontWeight: 700,
+                        padding: '1px 5px',
+                        borderRadius: '10px',
+                        background: isActive ? 'rgba(255,255,255,0.25)' : 'var(--color-error)',
+                        color: '#fff', // #fff on error/primary bg
+                        flexShrink: 0,
+                      }}
+                    >
+                      {liveCount}
+                    </span>
+                  )}
+                </>
+              )}
             </button>
           )
         })}
@@ -170,7 +219,7 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
                 color: 'var(--color-text-muted)',
               }}
             >
-              Competições
+              Competitions
             </span>
           </div>
           {COMPETITIONS.map(competition => (

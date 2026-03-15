@@ -81,4 +81,10 @@ selected OddsButton on `--color-primary`). Must always be accompanied by an inli
   - Max 10 selections enforced
 - `BetSlipPanel.tsx` maps context BetSelection → BetSlipSelection for @openbet/ui BetSlip
 - `TodayMatches.tsx` uses `useBetSlip()` + passes `selectedMarkets` Set to each MatchCard
-- Provider nesting in layout: ClientConfigProvider > ThemeProvider > BetSlipProvider
+- Provider nesting in layout: ClientConfigProvider > ThemeProvider > BetSlipProvider > SportFilterProvider
+- `apps/shell/lib/sport-filter-context.tsx` — SportFilterProvider + useSportFilter hook
+  - `activeSport: string` (default 'football'), `setActiveSport: (id: string) => void`
+  - Used by SportsSidebar (sets), TodayMatches (reads), page.tsx (reads for title)
+- Match data shape in TodayMatches: `{ id, sport, league, homeTeam, awayTeam, startTime, variant, odds }`
+  - `odds.draw` is optional — MatchCard hides draw button when undefined
+  - Sports with no draw: basketball, tennis, esports, american-football, baseball, hockey

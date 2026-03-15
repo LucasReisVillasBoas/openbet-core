@@ -5,6 +5,7 @@ import { ThemeProvider } from '@/components/ThemeProvider'
 import { ThemeToggle } from '@/components/ThemeToggle'
 import { ClientConfigProvider } from '@/lib/client-config-context'
 import { BetSlipProvider } from '@/lib/bet-slip-context'
+import { SportFilterProvider } from '@/lib/sport-filter-context'
 import './globals.css'
 
 export const metadata: Metadata = {
@@ -27,91 +28,93 @@ export default async function RootLayout({
         <ClientConfigProvider initialConfig={config}>
           <ThemeProvider config={config}>
             <BetSlipProvider>
-              {/* Fixed header */}
-              <header
-                style={{
-                  position: 'fixed',
-                  top: 0,
-                  left: 0,
-                  right: 0,
-                  height: '60px',
-                  zIndex: 100,
-                  background: 'var(--color-background-card)',
-                  borderBottom: '1px solid var(--color-border)',
-                  display: 'flex',
-                  alignItems: 'center',
-                  justifyContent: 'space-between',
-                  padding: '0 1.5rem',
-                  fontFamily: 'var(--font-family)',
-                }}
-              >
-                {/* Logo + brand name */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <div
-                    style={{
-                      width: '32px',
-                      height: '32px',
-                      background: 'var(--color-primary)',
-                      borderRadius: '8px',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      fontSize: '1rem',
-                      fontWeight: 800,
-                      color: 'white',
-                      flexShrink: 0,
-                      fontFamily: 'var(--font-family)',
-                    }}
-                  >
-                    {config.brand.name[0]}
-                  </div>
-                  <span
-                    style={{
-                      fontWeight: 700,
-                      fontSize: '1.125rem',
-                      color: 'var(--color-text)',
-                    }}
-                  >
-                    {config.brand.name}
-                  </span>
-                </div>
-
-                {/* Right controls */}
-                <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                  <Search
-                    size={20}
-                    style={{ color: 'var(--color-text-muted)', cursor: 'pointer' }}
-                  />
-                  {isDemoMode && <ThemeToggle />}
-                </div>
-              </header>
-
-              {/* Demo banner — only in demo mode */}
-              {isDemoMode && (
-                <div
+              <SportFilterProvider>
+                {/* Fixed header */}
+                <header
                   style={{
                     position: 'fixed',
-                    top: '60px',
+                    top: 0,
                     left: 0,
                     right: 0,
-                    zIndex: 99,
-                    background: 'var(--color-surface)',
+                    height: '60px',
+                    zIndex: 100,
+                    background: 'var(--color-background-card)',
                     borderBottom: '1px solid var(--color-border)',
-                    padding: '8px 1.5rem',
-                    fontSize: '0.75rem',
-                    color: 'var(--color-text-muted)',
                     display: 'flex',
+                    alignItems: 'center',
                     justifyContent: 'space-between',
+                    padding: '0 1.5rem',
                     fontFamily: 'var(--font-family)',
                   }}
                 >
-                  <span>OpenBet Core — Demo White-Label</span>
-                  <span>Troque o tema no botão acima para ver a mágica</span>
-                </div>
-              )}
+                  {/* Logo + brand name */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <div
+                      style={{
+                        width: '32px',
+                        height: '32px',
+                        background: 'var(--color-primary)',
+                        borderRadius: '8px',
+                        display: 'flex',
+                        alignItems: 'center',
+                        justifyContent: 'center',
+                        fontSize: '1rem',
+                        fontWeight: 800,
+                        color: 'white',
+                        flexShrink: 0,
+                        fontFamily: 'var(--font-family)',
+                      }}
+                    >
+                      {config.brand.name[0]}
+                    </div>
+                    <span
+                      style={{
+                        fontWeight: 700,
+                        fontSize: '1.125rem',
+                        color: 'var(--color-text)',
+                      }}
+                    >
+                      {config.brand.name}
+                    </span>
+                  </div>
 
-              {/* paddingTop: 96px (header 60px + banner 36px) em demo mode, 64px caso contrário */}
-              <div style={{ paddingTop: isDemoMode ? '96px' : '64px' }}>{children}</div>
+                  {/* Right controls */}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <Search
+                      size={20}
+                      style={{ color: 'var(--color-text-muted)', cursor: 'pointer' }}
+                    />
+                    {isDemoMode && <ThemeToggle />}
+                  </div>
+                </header>
+
+                {/* Demo banner — only in demo mode */}
+                {isDemoMode && (
+                  <div
+                    style={{
+                      position: 'fixed',
+                      top: '60px',
+                      left: 0,
+                      right: 0,
+                      zIndex: 99,
+                      background: 'var(--color-surface)',
+                      borderBottom: '1px solid var(--color-border)',
+                      padding: '8px 1.5rem',
+                      fontSize: '0.75rem',
+                      color: 'var(--color-text-muted)',
+                      display: 'flex',
+                      justifyContent: 'space-between',
+                      fontFamily: 'var(--font-family)',
+                    }}
+                  >
+                    <span>OpenBet Core — Demo White-Label</span>
+                    <span>Troque o tema no botão acima para ver a mágica</span>
+                  </div>
+                )}
+
+                {/* paddingTop: 96px (header 60px + banner 36px) em demo mode, 64px caso contrário */}
+                <div style={{ paddingTop: isDemoMode ? '96px' : '64px' }}>{children}</div>
+              </SportFilterProvider>
             </BetSlipProvider>
           </ThemeProvider>
         </ClientConfigProvider>

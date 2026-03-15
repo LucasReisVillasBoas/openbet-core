@@ -12,9 +12,21 @@ import { BetSlipPanel } from '@/components/BetSlipPanel'
 import { SportsSidebar } from '@/components/SportsSidebar'
 import { TodayMatches } from '@/components/TodayMatches'
 import { useClientConfig } from '@/lib/client-config-context'
+import { useSportFilter } from '@/lib/sport-filter-context'
 
 const isDemoMode = process.env.NEXT_PUBLIC_DEMO_MODE === 'true'
 const TOP_OFFSET = isDemoMode ? 96 : 64
+
+const SPORT_LABELS: Record<string, string> = {
+  football: 'Football',
+  basketball: 'Basketball',
+  tennis: 'Tennis',
+  volleyball: 'Volleyball',
+  esports: 'E-Sports',
+  'american-football': 'Am. Football',
+  baseball: 'Baseball',
+  hockey: 'Hockey',
+}
 
 const CASINO_GAMES = [
   { name: 'Sweet Bonanza', provider: 'Pragmatic Play', hot: true },
@@ -26,6 +38,8 @@ const CASINO_GAMES = [
 export default function Page() {
   const config = useClientConfig()
   const { features } = config
+  const { activeSport } = useSportFilter()
+  const sportLabel = SPORT_LABELS[activeSport] ?? activeSport
 
   return (
     <>
@@ -103,19 +117,19 @@ export default function Page() {
               {features.esports && <FeatureBadge color="var(--color-primary)" label="E-SPORTS" />}
             </div>
 
-            {/* Ao Vivo section */}
+            {/* Hoje section */}
+            <section style={{ marginBottom: '32px' }}>
+              <SectionHeader icon={Calendar} title={`Today · ${sportLabel}`} />
+              <TodayMatches />
+            </section>
+
+            {/* Ao Vivo section — sportsbook remote below match cards */}
             {features.liveBetting && (
               <section style={{ marginBottom: '32px' }}>
                 <SectionHeader icon={Radio} title="Ao Vivo" />
                 <SportsbookRemote />
               </section>
             )}
-
-            {/* Hoje section */}
-            <section style={{ marginBottom: '32px' }}>
-              <SectionHeader icon={Calendar} title="Hoje" />
-              <TodayMatches />
-            </section>
 
             {/* Casino section */}
             {features.casino && (

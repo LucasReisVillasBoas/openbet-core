@@ -27,8 +27,17 @@ export function BetSlipProvider({ children }: { children: React.ReactNode }) {
 
   const addSelection = useCallback((s: BetSelection) => {
     setSelections(prev => {
-      const exists = prev.find(x => x.id === s.id)
-      if (exists) return prev.filter(x => x.id !== s.id)
+      // Se clicar na mesma seleção → toggle off
+      if (prev.find(x => x.id === s.id)) return prev.filter(x => x.id !== s.id)
+      // Se for Match Result e já existe seleção nesse jogo → substituir
+      if (s.marketName === 'Match Result') {
+        const filtered = prev.filter(
+          x => !(x.matchId === s.matchId && x.marketName === 'Match Result')
+        )
+        if (filtered.length >= 10) return filtered
+        return [...filtered, s]
+      }
+      // Outros mercados: sem limite por jogo (só limite total de 10)
       if (prev.length >= 10) return prev
       return [...prev, s]
     })
