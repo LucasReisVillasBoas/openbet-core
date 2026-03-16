@@ -204,11 +204,13 @@ Packages build in dependency order: `config-schema → theme-engine → ui → a
 
 ## Deployments
 
-| App               | URL                                                                              | Env              |
-| ----------------- | -------------------------------------------------------------------------------- | ---------------- |
-| Shell (demo)      | [openbet-core-shell.vercel.app](https://openbet-core-shell.vercel.app)           | `DEMO_MODE=true` |
-| Sportsbook remote | [openbet-core-sportsbook.vercel.app](https://openbet-core-sportsbook.vercel.app) | MF remote        |
-| Storybook         | [openbet-core-ui.vercel.app](https://openbet-core-ui.vercel.app)                 | Static           |
+| App               | URL                                                                                      | Env              |
+| ----------------- | ---------------------------------------------------------------------------------------- | ---------------- |
+| Shell (demo)      | [openbet-core-shell.vercel.app](https://openbet-core-shell.vercel.app)                   | `DEMO_MODE=true` |
+| Grandbet (demo)   | [openbet-core-shell-grandbet.vercel.app](https://openbet-core-shell-grandbet.vercel.app) | Grandbet Client  |
+| Elitebet (demo)   | [openbet-core-shell-elitebet.vercel.app](https://openbet-core-shell-elitebet.vercel.app) | Elitebet Client  |
+| Sportsbook remote | [openbet-core-sportsbook.vercel.app](https://openbet-core-sportsbook.vercel.app)         | MF remote        |
+| Storybook         | [openbet-core-ui.vercel.app](https://openbet-core-ui.vercel.app)                         | Static           |
 
 ---
 
