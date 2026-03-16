@@ -1,0 +1,105 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 680 620" width="680">
+  <style>
+    .bg-packages { fill: #F59E0B; fill-opacity: 0.08; }
+    .bg-apps { fill: #3B82F6; fill-opacity: 0.06; }
+    .box-amber { fill: #1C1A0F; stroke: #B45309; stroke-width: 0.5; }
+    .box-green { fill: #0D1F0F; stroke: #3B6D11; stroke-width: 0.5; }
+    .box-purple { fill: #130F1C; stroke: #6D28D9; stroke-width: 0.5; }
+    .box-blue { fill: #0D1525; stroke: #1D4ED8; stroke-width: 0.5; }
+    .box-teal { fill: #04342C; stroke: #0F6E56; stroke-width: 0.5; }
+    .box-gray { fill: #1C1C1A; stroke: #5F5E5A; stroke-width: 0.5; }
+    .t-amber { fill: #FCD34D; font-family: monospace; font-size: 11px; font-weight: 700; }
+    .t-green { fill: #86EFAC; font-family: monospace; font-size: 11px; font-weight: 700; }
+    .t-purple { fill: #C4B5FD; font-family: monospace; font-size: 11px; font-weight: 700; }
+    .t-blue { fill: #93C5FD; font-family: monospace; font-size: 11px; font-weight: 700; }
+    .t-teal { fill: #5EEAD4; font-family: monospace; font-size: 11px; font-weight: 700; }
+    .t-muted { fill: #94A3B8; font-family: monospace; font-size: 9px; }
+    .t-label { fill: #64748B; font-family: monospace; font-size: 9px; font-weight: 700; }
+    .arr { stroke: #475569; stroke-width: 0.5; fill: none; }
+    .arr-mf { stroke: #1D4ED8; stroke-width: 1.5; stroke-dasharray: 5 3; fill: none; }
+    .arr-ev { stroke: #0F6E56; stroke-width: 0.5; stroke-dasharray: 3 3; fill: none; }
+  </style>
+  <defs>
+    <marker id="a" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#475569" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+    <marker id="amf" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#1D4ED8" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+    <marker id="aev" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M2 1L8 5L2 9" fill="none" stroke="#0F6E56" stroke-width="1.5" stroke-linecap="round"/>
+    </marker>
+  </defs>
+
+  <!-- Packages layer -->
+  <rect x="20" y="16" width="640" height="200" rx="14" class="bg-packages" stroke="#B45309" stroke-width="0.5"/>
+  <text class="t-label" x="34" y="34">PACKAGES — shared core</text>
+
+  <!-- config-schema -->
+  <rect x="60" y="52" width="170" height="56" rx="8" class="box-amber"/>
+  <text class="t-amber" x="145" y="77" text-anchor="middle">@openbet/config-schema</text>
+  <text class="t-muted" x="145" y="97" text-anchor="middle">Zod · TypeScript types</text>
+
+  <!-- theme-engine -->
+  <rect x="260" y="52" width="170" height="56" rx="8" class="box-amber"/>
+  <text class="t-amber" x="345" y="77" text-anchor="middle">@openbet/theme-engine</text>
+  <text class="t-muted" x="345" y="97" text-anchor="middle">CSS vars · apply()</text>
+
+  <!-- ui -->
+  <rect x="460" y="52" width="180" height="56" rx="8" class="box-green"/>
+  <text class="t-green" x="550" y="77" text-anchor="middle">@openbet/ui</text>
+  <text class="t-muted" x="550" y="97" text-anchor="middle">OddsButton · MatchCard · BetSlip</text>
+
+  <!-- clients -->
+  <rect x="60" y="140" width="570" height="56" rx="8" class="box-purple"/>
+  <text class="t-purple" x="345" y="164" text-anchor="middle">clients/</text>
+  <text class="t-muted" x="345" y="184" text-anchor="middle">grandbet.config.json · elitebet.config.json — brand · theme · features · layout · regional</text>
+
+  <!-- Package arrows -->
+  <line x1="230" y1="80" x2="258" y2="80" class="arr" marker-end="url(#a)"/>
+  <line x1="430" y1="80" x2="458" y2="80" class="arr" marker-end="url(#a)"/>
+
+  <!-- Apps layer -->
+  <rect x="20" y="240" width="640" height="220" rx="14" class="bg-apps" stroke="#1D4ED8" stroke-width="0.5"/>
+  <text class="t-label" x="34" y="258">APPS — runtime</text>
+
+  <!-- shell -->
+  <rect x="60" y="272" width="240" height="168" rx="8" class="box-blue"/>
+  <text class="t-blue" x="180" y="296" text-anchor="middle">apps/shell</text>
+  <text class="t-muted" x="180" y="314" text-anchor="middle">MF Host · Next.js 16</text>
+  <line x1="80" y1="324" x2="280" y2="324" stroke="#2D3F55" stroke-width="0.5"/>
+  <text class="t-muted" x="180" y="342" text-anchor="middle">BetSlipContext</text>
+  <text class="t-muted" x="180" y="360" text-anchor="middle">SportFilterContext</text>
+  <text class="t-muted" x="180" y="378" text-anchor="middle">ThemeToggle · DEMO_MODE</text>
+  <text class="t-muted" x="180" y="396" text-anchor="middle">localhost:3000</text>
+
+  <!-- sportsbook -->
+  <rect x="380" y="272" width="240" height="168" rx="8" class="box-teal"/>
+  <text class="t-teal" x="500" y="296" text-anchor="middle">apps/sportsbook</text>
+  <text class="t-muted" x="500" y="314" text-anchor="middle">MF Remote · Next.js 16</text>
+  <line x1="400" y1="324" x2="600" y2="324" stroke="#0F4D3C" stroke-width="0.5"/>
+  <text class="t-muted" x="500" y="342" text-anchor="middle">SportsbookPage</text>
+  <text class="t-muted" x="500" y="360" text-anchor="middle">webpack.container.cjs</text>
+  <text class="t-muted" x="500" y="378" text-anchor="middle">remoteEntry.js → public/</text>
+  <text class="t-muted" x="500" y="396" text-anchor="middle">localhost:3001</text>
+
+  <!-- MF arrow -->
+  <path d="M300 348 L378 348" class="arr-mf" marker-end="url(#amf)"/>
+  <text class="t-muted" x="340" y="340" text-anchor="middle">Module Federation 2.0</text>
+
+  <!-- Custom Events arrow -->
+  <path d="M378 370 L300 370" class="arr-ev" marker-end="url(#aev)"/>
+  <text class="t-muted" x="340" y="390" text-anchor="middle" opacity="0.7">Custom Events (ADR-006)</text>
+
+  <!-- Storybook -->
+  <rect x="20" y="488" width="640" height="56" rx="8" class="box-green"/>
+  <text class="t-green" x="340" y="512" text-anchor="middle">Storybook 8</text>
+  <text class="t-muted" x="340" y="532" text-anchor="middle">ThemeDecorator · GrandBet ↔ EliteBet · 6 components · localhost:6006</text>
+
+  <!-- Vertical arrows -->
+  <line x1="160" y1="196" x2="160" y2="270" class="arr" marker-end="url(#a)"/>
+  <line x1="520" y1="196" x2="520" y2="270" class="arr" marker-end="url(#a)"/>
+  <path d="M345 108 L345 232 L180 232 L180 270" class="arr" marker-end="url(#a)"/>
+  <path d="M550 108 L550 232 L500 232 L500 270" class="arr" marker-end="url(#a)"/>
+  <line x1="550" y1="440" x2="400" y2="486" class="arr" marker-end="url(#a)"/>
+</svg>

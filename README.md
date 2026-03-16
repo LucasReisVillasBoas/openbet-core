@@ -23,41 +23,7 @@ No if-statements per client. No forks. No custom builds.
 
 ## Architecture
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│                        MONOREPO                                  │
-│                                                                  │
-│  ┌─────────────────┐    ┌──────────────────┐                     │
-│  │ @openbet/       │    │ @openbet/        │                     │
-│  │ config-schema   │───▶│ theme-engine     │                     │
-│  │                 │    │                  │                     │
-│  │  Zod schema     │    │  CSS Custom      │                     │
-│  │  TypeScript     │    │  Properties      │                     │
-│  └─────────────────┘    └────────┬─────────┘                     │
-│                                  │                               │
-│  ┌───────────────────────────────▼─────────────────────────────┐ │
-│  │                     @openbet/ui                             │ │
-│  │  OddsButton · MatchCard · BetSlip · LiveScoreboard          │ │
-│  │  All components consume CSS vars — zero hardcoded colors    │ │
-│  └───────────────────────────────┬─────────────────────────────┘ │
-│                                  │                               │
-│         ┌────────────────────────┼──────────────────┐            │
-│         │                        │                  │            │
-│  ┌──────▼──────┐        ┌────────▼──────┐  ┌────────▼─────┐      │
-│  │ apps/shell  │◀──MF──▶│apps/sportsbook│  │  Storybook   │      │
-│  │             │        │               │  │              │      │
-│  │  MF Host    │        │  MF Remote    │  │  Component   │      │
-│  │  Next.js 16 │        │  Next.js 16   │  │  Explorer    │      │
-│  │  port 3000  │        │  port 3001    │  │  port 6006   │      │
-│  └──────┬──────┘        └───────────────┘  └──────────────┘      │
-│         │                                                        │
-│  ┌──────▼──────────────────────────────────────────────┐         │
-│  │                   clients/                          │         │
-│  │  grandbet.config.json · elitebet.config.json        │         │
-│  │  Brand · Theme · Features · Layout · Regional       │         │
-│  └─────────────────────────────────────────────────────┘         │
-└──────────────────────────────────────────────────────────────────┘
-```
+![OpenBet Core Architecture](docs/architecture/openbet-architecture.svg)
 
 ---
 
