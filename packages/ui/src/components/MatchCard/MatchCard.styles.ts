@@ -51,7 +51,7 @@ export const liveBadgeStyle: CSSProperties = {
   background: 'var(--color-error)',
   color: '#fff', // white text on error badge — sole permitted hardcode
   fontSize: '0.625rem',
-  borderRadius: '4px',
+  borderRadius: 'calc(var(--layout-border-radius) * 0.5)',
   padding: '2px 6px',
   fontWeight: 700,
   letterSpacing: '0.06em',

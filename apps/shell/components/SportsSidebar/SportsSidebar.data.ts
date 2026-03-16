@@ -28,4 +28,13 @@ export const SPORTS: Sport[] = [
   { id: 'hockey', name: 'Hockey', liveCount: 4, Icon: Zap },
 ]
 
-export const COMPETITIONS = ['UEFA Champions League', 'Premier League', 'La Liga', 'Brasileirão']
+export const COMPETITIONS_BY_SPORT: Record<string, string[]> = {
+  football: ['Champions League', 'Brasileirão', 'Premier League', 'La Liga', 'Serie A'],
+  basketball: ['NBA', 'NBB', 'EuroLeague', 'NCAA'],
+  tennis: ['ATP Masters', 'Grand Slam', 'WTA Tour', 'Davis Cup'],
+  volleyball: ['VNL', 'FIVB World Cup', 'Liga Nacional'],
+  esports: ['CS2 Major', 'LoL Worlds', 'VALORANT Champions', 'Dota 2 TI'],
+  'american-football': ['NFL', 'Super Bowl', 'College Football'],
+  baseball: ['MLB', 'World Series', 'NPB'],
+  hockey: ['NHL', 'KHL', 'Stanley Cup'],
+}

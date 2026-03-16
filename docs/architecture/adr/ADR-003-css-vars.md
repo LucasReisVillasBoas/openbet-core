@@ -107,3 +107,25 @@ className={`bg-[${config.colors.primary}]`}
 ```
 
 Tailwind v4 com CSS vars funciona, mas classes dinamicas (interpoladas) nao sao processadas pelo Tailwind — elas precisam existir literalmente no codigo para serem incluidas no bundle. E possivel usar Tailwind com CSS vars como valores, mas o mecanismo de injecao continuaria sendo `setProperty`.
+
+---
+
+## Implementação atual — Remote URLs
+
+> **Nota**: Este ADR originalmente documentava que URLs dos remotes MF viriam do `ClientConfig`. A implementação atual diverge parcialmente dessa intenção.
+
+As URLs dos remotes são resolvidas em `apps/shell/lib/remote-registry.ts` usando:
+
+1. `NEXT_PUBLIC_SPORTSBOOK_REMOTE` env var (prioridade máxima)
+2. URL de produção hardcoded como fallback (`https://openbet-core-sportsbook.vercel.app/remoteEntry.js`)
+
+O campo `ClientConfig.remotes` existe no schema mas **não é consumido** por `remote-registry.ts`. Esta é uma lacuna conhecida — implementar override de URL em runtime via `ClientConfig` é um enhancement planejado.
+
+A intenção arquitetural (URLs devem vir da config, não de hardcode) está correta; a implementação atual usa env vars como passo intermediário pragmático.
+
+Para override local de desenvolvimento:
+
+```
+# apps/shell/.env.local
+NEXT_PUBLIC_SPORTSBOOK_REMOTE=http://localhost:3001/remoteEntry.js
+```

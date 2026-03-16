@@ -8,7 +8,7 @@ export const floatingButtonStyle: CSSProperties = {
   zIndex: 51,
   background: 'var(--color-background-card)',
   border: '1px solid var(--color-border)',
-  borderRadius: '8px 0 0 8px',
+  borderRadius: 'var(--layout-border-radius) 0 0 var(--layout-border-radius)',
   padding: '12px 8px',
   cursor: 'pointer',
   display: 'flex',
@@ -58,7 +58,7 @@ export const badgeStyle: CSSProperties = {
   marginLeft: '6px',
   background: 'var(--color-primary)',
   color: '#fff',
-  borderRadius: '10px',
+  borderRadius: 'var(--layout-border-radius)',
   padding: '1px 6px',
   fontSize: '0.625rem',
   fontWeight: 700,
@@ -72,7 +72,7 @@ export const closeButtonStyle: CSSProperties = {
   display: 'flex',
   alignItems: 'center',
   justifyContent: 'center',
-  borderRadius: '4px',
+  borderRadius: 'calc(var(--layout-border-radius) * 0.5)',
 }
 
 export const contentStyle: CSSProperties = {

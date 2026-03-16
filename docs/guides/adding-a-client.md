@@ -192,10 +192,28 @@ Antes de abrir um PR com um novo cliente:
 - [ ] `apps/shell/lib/client-config-context.tsx` — ClientId type e CLIENT_CONFIGS atualizados
 - [ ] Testado localmente com `NEXT_PUBLIC_CLIENT_ID=client-maxbet`
 - [ ] Visual verificado no browser — cores, tipografia, layout
+- [ ] `features.esports` verificado — `true` exibe E-Sports na sidebar, `false` oculta
+- [ ] `layout.borderRadius` verificado — `md` resulta em 8px, `lg` em 16px em todos os componentes
 - [ ] ThemeToggle alterna corretamente entre clientes
 - [ ] `pnpm build` passa sem erros
 - [ ] `pnpm typecheck` passa sem erros
 - [ ] `pnpm lint` passa sem erros
+
+---
+
+## Comparativo entre clientes ativos
+
+| Campo | GrandBet | EliteBet |
+|---|---|---|
+| `features.esports` | `false` — E-Sports oculto na sidebar | `true` — E-Sports visivel na sidebar |
+| `layout.borderRadius` | `"md"` — 8px em todos os componentes | `"lg"` — 16px em todos os componentes |
+| `theme.colors.primary` | `#1A7A4A` (verde escuro) | `#4F46E5` (indigo) |
+| `theme.typography.fontFamily` | `Inter` | `Outfit` |
+| `layout.betslipPosition` | `sidebar-right` | `bottom-drawer` |
+| `features.casino` | `true` | `false` |
+| `features.betBuilder` | `true` | `false` |
+
+Cada campo do `features.*` controla a visibilidade de uma secao ou funcionalidade na UI. Nenhum `if (client === 'grandbet')` existe no codigo — apenas a leitura do campo correspondente no `ClientConfig`.
 
 ---
 

@@ -65,9 +65,25 @@ When responding to architectural requests, structure your output as follows:
 - Make decisions without documenting them in ADR format
 - Accept vague requirements — always seek clarification when needed
 
+## Estado atual do projeto
+
+O projeto tem 6 ADRs em `docs/architecture/adr/`:
+- ADR-001: Turborepo + pnpm Workspaces
+- ADR-002: ClientConfig como fonte única de verdade
+- ADR-003: CSS Custom Properties como contrato de tema
+- ADR-004: Module Federation Host (Shell) Architecture
+- ADR-005: Standalone webpack container para sportsbook remote
+- ADR-006: Custom Events para comunicação shell↔remote
+
+**Gap documentado (ADR-003 vs implementação atual):** ADR-003 descreve URLs de remotes vindas do `ClientConfig` em runtime. A implementação atual usa `NEXT_PUBLIC_SPORTSBOOK_REMOTE` (env var) com fallback por `NODE_ENV` em `lib/remote-registry.ts` — porque `next.config.ts` roda em build time, não por request. Esse gap é intencional e documentado. A evolução futura seria `loadRemote()` dinâmico em runtime.
+
+**Contextos shell-local (não cruzam boundaries de MF):**
+- `BetSlipContext` (`apps/shell/lib/bet-slip-context.tsx`) — acumula apostas selecionadas, escuta Custom Events do sportsbook
+- `SportFilterContext` (`apps/shell/lib/sport-filter-context.tsx`) — controla o esporte ativo filtrado na sidebar
+
 ## Documentação de referência
 - [docs/architecture/overview.md](../../docs/architecture/overview.md) — Arquitetura geral do sistema
-- [docs/architecture/adr/](../../docs/architecture/adr/) — ADR-001 a ADR-004
+- [docs/architecture/adr/](../../docs/architecture/adr/) — ADR-001 a ADR-006
 - [docs/decisions.md](../../docs/decisions.md) — Log de decisões tomadas
 
 ## Update Your Agent Memory

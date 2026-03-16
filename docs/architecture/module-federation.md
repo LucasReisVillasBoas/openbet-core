@@ -89,16 +89,18 @@ Quando o shell carrega o remote no mesmo documento, as CSS vars injetadas pelo `
 
 ## Como as URLs dos remotes sao resolvidas
 
-A resolucao de URLs usa `NODE_ENV` em `apps/shell/lib/remote-registry.ts`:
+A resolucao de URLs usa `NEXT_PUBLIC_SPORTSBOOK_REMOTE` (override explicito) ou `NODE_ENV` como fallback em `apps/shell/lib/remote-registry.ts`:
 
 ```typescript
 // apps/shell/lib/remote-registry.ts
-const isProd = process.env.NODE_ENV === 'production'
+const remoteUrl =
+  process.env.NEXT_PUBLIC_SPORTSBOOK_REMOTE ??
+  (process.env.NODE_ENV === 'production'
+    ? 'https://openbet-core-sportsbook.vercel.app/remoteEntry.js'
+    : 'http://localhost:3001/remoteEntry.js')
 
 const REMOTES = {
-  sportsbook: isProd
-    ? 'sportsbook@https://openbet-core-sportsbook.vercel.app/remoteEntry.js'
-    : 'sportsbook@http://localhost:3001/remoteEntry.js',
+  sportsbook: `sportsbook@${remoteUrl}`,
 }
 
 export function getRemotes(): Record<string, string> {
@@ -123,11 +125,15 @@ config.plugins.push(
 
 `next.config.ts` roda em build time, nao por request. O `ClientConfig` (que existe por request, no servidor) nao pode alimentar o mapa estatico de remotes do webpack. A URL de producao do sportsbook e uma constante estavel — nao um hardcode arbitrario, mas um ponto de entrada canonico do deploy.
 
+**`NEXT_PUBLIC_SPORTSBOOK_REMOTE`:** Permite apontar o shell para qualquer instancia do sportsbook sem rebuild. Util para staging, testes de versao e desenvolvimento local com URL nao padrao.
+
 Para evolucao futura com URLs verdadeiramente dinamicas por operador, a abordagem seria usar `loadRemote()` do MF 2.0 em runtime, lendo a URL do `ClientConfig`.
 
 ---
 
 ## O webpack.container.cjs — por que existe e como funciona
+
+> Referencia tecnica: [ADR-005](./adr/ADR-005-standalone-mf-container.md)
 
 O Next.js gera chunks webpack que dependem do runtime do propio app para serem inicializados. Quando o shell tenta carregar o `remoteEntry.js` gerado pelo Next.js do sportsbook, acontece o seguinte:
 
@@ -177,13 +183,18 @@ module.exports = {
 
 ```bash
 # Sportsbook — desenvolvimento
-pnpm --filter=sportsbook dev               # Next.js em localhost:3001
-pnpm --filter=sportsbook dev:container     # webpack --watch gerando remoteEntry.js
+pnpm --filter=sportsbook dev               # Next.js em localhost:3001 (Turbopack, HMR rapido)
+pnpm --filter=sportsbook dev:container     # webpack --watch gerando remoteEntry.js em localhost
+
+# Fluxo recomendado para desenvolvimento local:
+# 1. pnpm --filter=sportsbook build:container:dev  (gera remoteEntry.js com publicPath localhost)
+# 2. pnpm --filter=sportsbook dev -p 3001          (sobe o Next.js do sportsbook)
+# 3. pnpm --filter=shell dev --webpack              (sobe o shell no modo webpack, necessario para MF)
 
 # Sportsbook — producao
 pnpm --filter=sportsbook build             # Next.js build
-pnpm --filter=sportsbook build:container   # gera public/remoteEntry.js (producao)
-pnpm --filter=sportsbook build:container:dev  # gera com publicPath localhost
+pnpm --filter=sportsbook build:container   # gera public/remoteEntry.js (publicPath Vercel)
+pnpm --filter=sportsbook build:container:dev  # gera public/remoteEntry.js (publicPath localhost)
 ```
 
 ---
@@ -236,6 +247,131 @@ if (isServer) {
 **6. Adicione a URL no `ClientConfigSchema`** (campo `remotes`) e nos JSONs dos clientes que ativam o casino.
 
 **7. Deploy:** Deploy o casino primeiro (o shell precisa do `remoteEntry.js` disponivel), depois o shell.
+
+---
+
+## Comunicacao shell↔remote via Custom Events
+
+React Context nao cruza boundaries de Module Federation — cada app tem seu proprio React tree. Quando o sportsbook precisa notificar o shell (ex: usuario clicou em uma odd), a comunicacao e feita via Custom Events do DOM.
+
+```
+apps/sportsbook (remote)               apps/shell (host)
+─────────────────────────              ─────────────────────────
+OddsButton onClick                     BetSlipContext
+  dispatchBetAdd(bet)    ──────────►   onBetAdd(handler)
+  dispatchBetRemove(bet) ──────────►   onBetRemove(handler)
+```
+
+**Por que Custom Events:**
+
+| Alternativa | Problema |
+|---|---|
+| React Context compartilhado | Nao cruza boundary de MF — cada app tem seu proprio tree React |
+| Props diretas shell→remote | Cria acoplamento — o remote precisa saber da API do shell |
+| Estado global (Redux/Zustand) | Requer shared scope — incompativel com `shared: {}` |
+| postMessage/iframe | Sportsbook nao roda em iframe — mesma janela, mesmo document |
+| Custom Events DOM | Nativo, sem dependencias extras, funciona no mesmo document |
+
+**Implementacao:** Os helpers estao em `packages/ui/src/events/bet-events.ts`, importados pelo sportsbook para despachar e pelo shell para escutar. O `BetSlipContext` em `apps/shell/lib/bet-slip-context.tsx` registra os listeners em `useEffect` e acumula as apostas no state local.
+
+**Referencia tecnica:** [ADR-006](./adr/ADR-006-custom-events-communication.md)
+
+---
+
+## Server-side stubs
+
+**Localização:** `apps/shell/lib/remote-stubs/`
+
+Next.js compila dois bundles separados para cada pagina: um bundle de servidor (Node.js) e um bundle de cliente (navegador). O Module Federation e uma tecnologia de runtime do navegador — os remotes so podem ser carregados no cliente, pois dependem de `fetch` e da inicializacao do runtime webpack no DOM.
+
+O componente `SportsbookRemote.tsx` usa `next/dynamic` com `ssr: false` para garantir que o remote nunca seja renderizado no servidor:
+
+```tsx
+const SportsbookPage = dynamic(() => import('sportsbook/SportsbookPage'), { ssr: false })
+```
+
+No entanto, isso nao impede que o webpack compile o modulo no bundle de servidor. Mesmo com `ssr: false`, o grafo de modulos do lado do servidor tenta resolver `'sportsbook/SportsbookPage'` estaticamente. Sem um arquivo que satisfaca esse import, o build do servidor falha:
+
+```
+Module not found: Can't resolve 'sportsbook/SportsbookPage'
+```
+
+A solucao e um **stub**: um arquivo TypeScript minimo que exporta um componente React que retorna `null`. O stub satisfaz o resolver do webpack no contexto do servidor sem executar nenhum codigo de MF.
+
+**Arquivo do stub:**
+
+```
+apps/shell/lib/remote-stubs/sportsbook-SportsbookPage.tsx
+```
+
+O stub e mapeado via `webpack.resolve.alias` no branch `isServer` do `next.config.ts`:
+
+```typescript
+if (isServer) {
+  config.resolve.alias = {
+    'sportsbook/SportsbookPage': path.resolve(
+      __dirname,
+      'lib/remote-stubs/sportsbook-SportsbookPage.tsx',
+    ),
+  }
+  return config
+}
+```
+
+O alias so e ativado no contexto de compilacao do servidor. No cliente, o MF host runtime intercepta o import e o resolve normalmente a partir do `remoteEntry.js`.
+
+**Para adicionar um novo remote:** Crie um stub em `lib/remote-stubs/casino-CasinoPage.tsx` (exportando `null`) e adicione a entrada correspondente no mapa de aliases dentro do bloco `isServer`.
+
+---
+
+## TypeScript declarations para modulos federados
+
+**Arquivo:** `apps/shell/types/remote.d.ts`
+
+TypeScript nao consegue resolver `'sportsbook/SportsbookPage'` — nao e um modulo no disco nem um pacote em `node_modules`. E um import dinamico de MF que so existe em runtime. Sem uma declaracao de tipo, o TypeScript lanca um erro de compilacao:
+
+```
+Cannot find module 'sportsbook/SportsbookPage' or its corresponding type declarations.
+```
+
+O arquivo `remote.d.ts` resolve isso com declaracoes de modulo ambient:
+
+```typescript
+// apps/shell/types/remote.d.ts
+import type React from 'react'
+
+declare module 'sportsbook/SportsbookPage' {
+  const SportsbookPage: React.ComponentType
+  export default SportsbookPage
+}
+```
+
+Essa declaracao diz ao TypeScript: "o modulo `'sportsbook/SportsbookPage'` existe e exporta um componente React como default". O TypeScript aceita o import sem precisar de um arquivo real.
+
+**Tipos gerados pelo plugin MF:**
+
+O `ModuleFederationPlugin` do MF 2.0 pode gerar automaticamente tipos para os remotes em `apps/shell/@mf-types/sportsbook/`. Esses tipos sao mais precisos (refletem os tipos reais exportados pelo sportsbook). A declaracao em `remote.d.ts` serve como fallback ou complemento quando a geracao automatica nao esta disponivel.
+
+**Como adicionar tipos para um novo remote:**
+
+Adicione um novo bloco `declare module` no mesmo arquivo `remote.d.ts`:
+
+```typescript
+declare module 'casino/CasinoPage' {
+  const CasinoPage: React.ComponentType
+  export default CasinoPage
+}
+
+declare module 'casino/CasinoWidget' {
+  interface CasinoWidgetProps {
+    gameId: string
+  }
+  const CasinoWidget: React.ComponentType<CasinoWidgetProps>
+  export default CasinoWidget
+}
+```
+
+Mantenha `remote.d.ts` em sincronia com os modulos listados em `exposes` no `webpack.container.cjs` de cada remote.
 
 ---
 

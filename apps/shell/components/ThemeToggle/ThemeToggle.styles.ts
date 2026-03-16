@@ -19,7 +19,7 @@ export const buttonStyle: CSSProperties = {
 export const currentBrandStyle: CSSProperties = {
   background: 'var(--color-primary)',
   color: '#fff',
-  borderRadius: '4px',
+  borderRadius: 'calc(var(--layout-border-radius) * 0.5)',
   padding: '2px 7px',
   fontSize: '0.6875rem',
   fontWeight: 700,

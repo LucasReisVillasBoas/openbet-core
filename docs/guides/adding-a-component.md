@@ -4,9 +4,53 @@ Todo componente do `@openbet/ui` segue estrutura, convencoes e regras identicas.
 
 ---
 
-## Estrutura de arquivos
+## Convencao de estrutura de arquivos
 
-Crie os arquivos em `packages/ui/src/components/OddsDisplay/`:
+Todo componente vive em um diretorio proprio com o mesmo nome do componente. A estrutura completa, usada em componentes com dados estaticos ou estilos complexos, e:
+
+```
+ComponentName/
+├── ComponentName.tsx         # Implementacao (componente React)
+├── ComponentName.types.ts    # Interfaces e tipos de props
+├── ComponentName.styles.ts   # Objetos de estilo (React.CSSProperties)
+├── ComponentName.data.ts     # Dados mock, constantes, arrays estaticos
+├── ComponentName.stories.tsx # Storybook stories para todos os estados
+└── index.ts                  # Barrel export (re-exporta tudo)
+```
+
+**Quando criar cada arquivo:**
+
+| Arquivo | Quando criar |
+|---|---|
+| `ComponentName.tsx` | Sempre — e o componente em si |
+| `ComponentName.types.ts` | Sempre que o componente tiver props nao triviais. Centraliza interfaces e tipos exportaveis |
+| `ComponentName.styles.ts` | Sempre que o componente tiver estilos. NUNCA hardcode styles inline no `.tsx` — objetos `React.CSSProperties` com CSS Custom Properties ficam aqui |
+| `ComponentName.data.ts` | Quando o componente tiver dados mock, listas estaticas ou constantes proprias. Exemplo: `SPORTS` e `COMPETITIONS_BY_SPORT` em `SportsSidebar.data.ts` |
+| `ComponentName.stories.tsx` | Sempre — regra inviolavel do CLAUDE.md (regra #5) |
+| `index.ts` | Sempre — barrel export para que importadores usem `import { X } from '@/components/ComponentName'` sem precisar referenciar o arquivo interno |
+
+**Exemplos reais no codebase:**
+
+```
+apps/shell/components/SportsSidebar/
+├── SportsSidebar.tsx          # Componente
+├── SportsSidebar.styles.ts    # Estilos (sidebarStyle, getSportButtonStyle, etc.)
+├── SportsSidebar.data.ts      # SPORTS[], COMPETITIONS_BY_SPORT{}
+└── index.ts                   # export { SportsSidebar }
+
+apps/shell/components/BetSlipPanel/
+├── BetSlipPanel.tsx
+├── BetSlipPanel.styles.ts
+└── index.ts
+
+apps/shell/components/TodayMatches/
+├── TodayMatches.tsx
+├── TodayMatches.styles.ts
+├── TodayMatches.data.ts       # TODAY_MATCHES[], type Match
+└── index.ts
+```
+
+Para componentes simples em `packages/ui`, a estrutura minima aceitavel e:
 
 ```
 packages/ui/src/components/OddsDisplay/
@@ -15,7 +59,7 @@ packages/ui/src/components/OddsDisplay/
 └── index.ts                 # Barrel export
 ```
 
-Nenhum arquivo adicional. Sem `.module.css`, sem arquivos de teste separados (testes ficam junto com as stories no Storybook play functions, se necessarios).
+Nenhum arquivo adicional sem necessidade. Sem `.module.css`, sem arquivos de teste separados (testes ficam junto com as stories no Storybook play functions, se necessarios).
 
 ---
 

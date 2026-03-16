@@ -49,7 +49,7 @@ export const collapseButtonStyle: CSSProperties = {
   justifyContent: 'center',
   color: 'var(--color-text-muted)',
   flexShrink: 0,
-  borderRadius: '4px',
+  borderRadius: 'calc(var(--layout-border-radius) * 0.5)',
   transition: 'color 150ms',
 }
 
@@ -115,7 +115,7 @@ export const liveCountBadgeStyle: CSSProperties = {
   fontSize: '0.625rem',
   fontWeight: 700,
   padding: '1px 5px',
-  borderRadius: '10px',
+  borderRadius: 'var(--layout-border-radius)',
   color: '#fff',
   flexShrink: 0,
 }

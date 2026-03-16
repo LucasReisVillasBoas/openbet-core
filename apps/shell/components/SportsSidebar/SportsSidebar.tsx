@@ -1,9 +1,10 @@
 'use client'
 
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
 import { ChevronLeft, ChevronRight } from 'lucide-react'
 import { useSportFilter } from '@/lib/sport-filter-context'
-import { SPORTS, COMPETITIONS, type Sport } from './SportsSidebar.data'
+import { useClientConfig } from '@/lib/client-config-context'
+import { SPORTS, COMPETITIONS_BY_SPORT, type Sport } from './SportsSidebar.data'
 import {
   sidebarStyle,
   collapsedSidebarStyle,
@@ -26,6 +27,28 @@ import {
 export function SportsSidebar({ topOffset }: { topOffset: number }) {
   const [collapsed, setCollapsed] = useState(false)
   const { activeSport, setActiveSport } = useSportFilter()
+  const config = useClientConfig()
+
+  // Filter sports based on feature flags
+  const visibleSports = SPORTS.filter(sport => {
+    if (sport.id === 'esports') return config.features.esports
+    return true
+  })
+
+  // Reset active sport if it's been filtered out
+  useEffect(() => {
+    if (!visibleSports.find(s => s.id === activeSport)) {
+      setActiveSport('football')
+    }
+  }, [visibleSports, activeSport, setActiveSport])
+
+  // Sync sidebar width to CSS var for responsive layout
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--sidebar-current-width',
+      collapsed ? '64px' : '220px'
+    )
+  }, [collapsed])
 
   const currentSidebarStyle: React.CSSProperties = collapsed
     ? { ...collapsedSidebarStyle, top: topOffset }
@@ -52,7 +75,7 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
       </div>
 
       <div style={collapsed ? collapsedSportsListStyle : sportsListStyle}>
-        {SPORTS.map(({ id, name, liveCount, Icon }: Sport) => {
+        {visibleSports.map(({ id, name, liveCount, Icon }: Sport) => {
           const isActive = activeSport === id
           const isLive = liveCount > 0
           return (
@@ -83,7 +106,7 @@ export function SportsSidebar({ topOffset }: { topOffset: number }) {
           <div style={competitionsLabelStyle}>
             <span style={competitionsTitleStyle}>Competitions</span>
           </div>
-          {COMPETITIONS.map(competition => (
+          {(COMPETITIONS_BY_SPORT[activeSport] ?? []).map(competition => (
             <button
               key={competition}
               type="button"

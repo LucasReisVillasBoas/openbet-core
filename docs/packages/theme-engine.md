@@ -97,31 +97,73 @@ const vars = buildCSSVars(config)
 
 ## Lista de todas as CSS vars geradas
 
-| CSS Custom Property | Exemplo (GrandBet) | Exemplo (EliteBet) |
+As vars abaixo sao geradas por `buildCSSVars()` em `packages/theme-engine/src/css-vars.ts` e aplicadas ao `:root` pelo metodo `apply()`.
+
+### Cores (14 vars)
+
+| CSS Custom Property | ClientConfig source | Exemplo (GrandBet) | Exemplo (EliteBet) |
+|---|---|---|---|
+| `--color-primary` | `theme.colors.primary` | `#1A7A4A` | `#4F46E5` |
+| `--color-primary-hover` | `theme.colors.primaryHover` | `#15623C` | `#4338CA` |
+| `--color-secondary` | `theme.colors.secondary` | `#F59E0B` | `#EC4899` |
+| `--color-background` | `theme.colors.background` | `#0F1923` | `#0D0F1A` |
+| `--color-background-card` | `theme.colors.backgroundCard` | `#1A2535` | `#161929` |
+| `--color-surface` | `theme.colors.surface` | `#243447` | `#1E2235` |
+| `--color-text` | `theme.colors.text` | `#F1F5F9` | `#F8FAFC` |
+| `--color-text-muted` | `theme.colors.textMuted` | `#94A3B8` | `#A0AABF` |
+| `--color-border` | `theme.colors.border` | `#2D3F55` | `#252A40` |
+| `--color-success` | `theme.colors.success` | `#22C55E` | `#10B981` |
+| `--color-error` | `theme.colors.error` | `#EF4444` | `#F43F5E` |
+| `--color-warning` | `theme.colors.warning` | `#F59E0B` | `#FBBF24` |
+| `--color-odds-up` | `theme.colors.oddsUp` | `#22C55E` | `#10B981` |
+| `--color-odds-down` | `theme.colors.oddsDown` | `#EF4444` | `#F43F5E` |
+
+### Tipografia (3 vars)
+
+| CSS Custom Property | ClientConfig source | Exemplo (GrandBet) | Exemplo (EliteBet) |
+|---|---|---|---|
+| `--font-family` | `theme.typography.fontFamily` | `Inter, system-ui, sans-serif` | `Outfit, system-ui, sans-serif` |
+| `--font-family-mono` | `theme.typography.fontFamilyMono` | `JetBrains Mono, ui-monospace, monospace` | `Fira Code, ui-monospace, monospace` |
+| `--font-size-base` | `theme.typography.scaleBase` (em px) | `16px` | `16px` |
+
+### Layout (4 vars)
+
+| CSS Custom Property | ClientConfig source | Exemplo (GrandBet) | Exemplo (EliteBet) |
+|---|---|---|---|
+| `--layout-sidebar-width` | `layout.sidebarWidth` (em px) | `280px` | `280px` |
+| `--layout-header-height` | `layout.headerHeight` (em px) | `64px` | `64px` |
+| `--layout-bet-slip-width` | `layout.betSlipWidth` (em px) | `360px` | `360px` |
+| `--layout-border-radius` | `layout.borderRadius` (enum → px via RADIUS_MAP) | `8px` (md) | `16px` (lg) |
+
+O `layout.borderRadius` aceita os valores enum `none`, `sm`, `md`, `lg`, `full`, mapeados para `0px`, `4px`, `8px`, `16px`, `9999px` respectivamente.
+
+### Marca (2 vars)
+
+| CSS Custom Property | ClientConfig source | Exemplo (GrandBet) | Exemplo (EliteBet) |
+|---|---|---|---|
+| `--brand-name` | `brand.name` | `GrandBet` | `EliteBet` |
+| `--brand-slug` | `brand.slug` | `grandbet` | `elitebet` |
+
+---
+
+## CSS vars dinamicas (definidas por componentes, NAO pelo ThemeEngine)
+
+Alem das 23 vars acima (gerenciadas pelo `ThemeEngine`), o shell define duas vars dinamicas diretamente no `document.documentElement` via `style.setProperty`. Essas vars refletem o estado atual de componentes colapsaveis e sao usadas pelo layout da pagina para ajuste de padding responsivo.
+
+| CSS Custom Property | Componente que define | Valores possiveis |
 |---|---|---|
-| `--color-primary` | `#1A7A4A` | `#4F46E5` |
-| `--color-primary-hover` | `#15623C` | `#4338CA` |
-| `--color-secondary` | `#F59E0B` | `#EC4899` |
-| `--color-background` | `#0F1923` | `#0D0F1A` |
-| `--color-background-card` | `#1A2535` | `#161929` |
-| `--color-surface` | `#243447` | `#1E2235` |
-| `--color-text` | `#F1F5F9` | `#F8FAFC` |
-| `--color-text-muted` | `#94A3B8` | `#A0AABF` |
-| `--color-border` | `#2D3F55` | `#252A40` |
-| `--color-success` | `#22C55E` | `#10B981` |
-| `--color-error` | `#EF4444` | `#F43F5E` |
-| `--color-warning` | `#F59E0B` | `#FBBF24` |
-| `--color-odds-up` | `#22C55E` | `#10B981` |
-| `--color-odds-down` | `#EF4444` | `#F43F5E` |
-| `--font-family` | `Inter, system-ui, sans-serif` | `Outfit, system-ui, sans-serif` |
-| `--font-family-mono` | `JetBrains Mono, ui-monospace, monospace` | `Fira Code, ui-monospace, monospace` |
-| `--font-size-base` | `16px` | `16px` |
-| `--layout-sidebar-width` | `280px` | `280px` |
-| `--layout-header-height` | `64px` | `64px` |
-| `--layout-bet-slip-width` | `360px` | `360px` |
-| `--layout-border-radius` | `8px` (md) | `16px` (lg) |
-| `--brand-name` | `GrandBet` | `EliteBet` |
-| `--brand-slug` | `grandbet` | `elitebet` |
+| `--sidebar-current-width` | `SportsSidebar` | `220px` (expandido) / `64px` (colapsado) |
+| `--betslip-current-width` | `BetSlipPanel` | `320px` (expandido) / `0px` (colapsado) |
+
+**Como sao usadas:** O `page.tsx` do shell usa essas vars para calcular o padding do conteudo central:
+
+```tsx
+// Exemplo conceitual — o conteudo se ajusta ao espaco disponivel
+paddingLeft: 'calc(var(--sidebar-current-width) + 24px)'
+paddingRight: 'calc(var(--betslip-current-width) + 24px)'
+```
+
+**Por que NAO estao no ThemeEngine:** Essas vars mudam em resposta a interacoes do usuario (clicar no botao de colapso), nao a troca de operador. O ThemeEngine gerencia identidade visual por operador — vars que mudam por comportamento de UI sao responsabilidade dos componentes que as controlam.
 
 ---
 

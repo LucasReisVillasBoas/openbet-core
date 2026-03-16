@@ -111,8 +111,11 @@ O OpenBet Core e construido em camadas. Cada camada tem responsabilidade exclusi
 | BetSlip | P0 | empty, single, multiple, odds-changed |
 | LiveScoreboard | P1 | simula WebSocket com setInterval |
 | ThemeShowcase | P1 | vitrine visual do theme-engine |
+| OddsWidget | P1 | Web Component standalone |
 
 **Storybook:** Todo componente tem stories para todos os estados. Sem stories = componente incompleto.
+
+**Custom Events (packages/ui/src/events/bet-events.ts):** Utilitarios para comunicacao shell-remote. `dispatchBetAdd` / `dispatchBetRemove` sao disparados pelo sportsbook; `onBetAdd` / `onBetRemove` sao escutados pelo shell. Ver ADR-006.
 
 ---
 
@@ -122,10 +125,12 @@ O OpenBet Core e construido em camadas. Cada camada tem responsabilidade exclusi
 
 **Responsabilidades:**
 - Carregar e validar o `ClientConfig` no servidor (`lib/client-config.ts` — server-only)
-- Resolver URLs dos remotes (`lib/remote-registry.ts`)
+- Resolver URLs dos remotes (`lib/remote-registry.ts`) via `NEXT_PUBLIC_SPORTSBOOK_REMOTE` ou `NODE_ENV`
 - Aplicar o tema no cliente (`components/ThemeProvider.tsx`)
 - Prover o `ClientConfig` via Context (`lib/client-config-context.tsx`)
 - Carregar o remote sportsbook via MF (`components/SportsbookRemote.tsx`)
+- Gerenciar apostas selecionadas via `BetSlipContext` (escuta Custom Events do sportsbook)
+- Filtrar esportes na sidebar via `SportFilterContext` (filtro controlado por `features.esports`)
 
 **Arquivos criticos:**
 
@@ -136,13 +141,18 @@ apps/shell/
 │   │                             # importa JSON, valida com Zod
 │   ├── client-config-context.tsx # 'use client'. Prover ClientConfig,
 │   │                             # ThemeToggle, persistencia em localStorage
-│   └── remote-registry.ts        # SERVER-ONLY. Resolve URLs por NODE_ENV
+│   ├── bet-slip-context.tsx      # 'use client'. BetSlipContext — escuta
+│   │                             # Custom Events (onBetAdd/onBetRemove)
+│   ├── sport-filter-context.tsx  # 'use client'. SportFilterContext — sidebar
+│   │                             # filtra esporte ativo
+│   └── remote-registry.ts        # Resolve URL do remoteEntry.js por env var
+│                                  # (NEXT_PUBLIC_SPORTSBOOK_REMOTE) ou NODE_ENV
 ├── components/
 │   ├── ThemeProvider.tsx          # 'use client'. Chama themeEngine.apply()
 │   │                             # em useEffect
 │   └── ThemeToggle.tsx           # 'use client'. Troca entre operadores
-│                                  # em runtime sem reload
-└── next.config.ts                # ModuleFederationPlugin (host)
+│                                  # em runtime sem reload (NEXT_PUBLIC_DEMO_MODE)
+└── next.config.ts                # ModuleFederationPlugin (host), shared: {}
 ```
 
 **Fluxo no servidor (por request):**
@@ -153,7 +163,15 @@ apps/shell/
 **Fluxo no cliente:**
 1. `ThemeProvider` recebe `config` como prop do servidor
 2. `useEffect(() => themeEngine.apply(config), [config])` injeta CSS vars no `:root`
-3. `ThemeToggle` usa `useSetClient()` para trocar o operador sem reload de pagina
+3. `ThemeToggle` usa `useSetClient()` para trocar o operador sem reload de pagina (visivel quando `NEXT_PUBLIC_DEMO_MODE=true`)
+4. `BetSlipContext` escuta Custom Events do sportsbook e acumula apostas selecionadas
+5. Sidebar usa `SportFilterContext` e `config.features.esports` para filtrar itens visiveis
+
+**Feature flags na sidebar:**
+- `features.esports = false` (GrandBet) → item E-Sports oculto na sidebar
+- `features.esports = true` (EliteBet) → item E-Sports visivel na sidebar
+- `layout.borderRadius = "md"` → `--layout-border-radius: 8px` (GrandBet)
+- `layout.borderRadius = "lg"` → `--layout-border-radius: 16px` (EliteBet)
 
 ---
 
@@ -227,7 +245,7 @@ RootLayout (Server Component)       ← apps/shell/app/layout.tsx
 
 ---
 
-## As 7 regras arquiteturais inviolaveis
+## As 9 regras arquiteturais inviolaveis
 
 1. **NUNCA hardcode cor em componente** — toda cor via CSS Custom Property (`var(--color-*)`)
 2. **NUNCA importar de `apps/` dentro de `packages/`** — dependencias so fluem de packages para apps
@@ -236,6 +254,8 @@ RootLayout (Server Component)       ← apps/shell/app/layout.tsx
 5. **Todo componente React TEM stories para todos os estados** — sem excecoes
 6. **`packages/config-schema`: dependencia permitida apenas `zod`** — nenhuma lib de UI ou framework
 7. **`packages/theme-engine`: dependencia permitida apenas `@openbet/config-schema`** — sem React, sem CSS-in-JS
+8. **`shared: {}` no MF** — React NAO e compartilhado via Module Federation (incompativel com Next.js 16 — causa RUNTIME-006)
+9. **Comunicacao shell-remote via Custom Events** — NUNCA via Context ou props diretas (Context nao cruza boundaries de MF)
 
 ---
 

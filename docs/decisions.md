@@ -68,8 +68,6 @@ const ClientConfigSchema = z.object({
 
 **A decisao:** O sportsbook e exposto como remote MF via `@module-federation/enhanced` (MF 2.0). O shell injeta as CSS vars no `:root` via `ThemeEngine`. O remote herda automaticamente via cascade — sem precisar saber que esta dentro de um shell, sem props, sem Context.
 
-O `webpack.container.cjs` resolve o problema tecnico: o Next.js nao gera um container MF com runtime autonomo. O script usa webpack standalone para gerar `public/remoteEntry.js` com o runtime MF embutido, compativel com o protocolo do host.
-
 React fica fora do `shared` scope em ambos os lados — uma decisao necessaria porque `@module-federation/enhanced` intercepta imports de React de forma que quebra a inicializacao do Next.js 16. Cada app empacota seu proprio React.
 
 **O que foi avaliado:**
@@ -82,10 +80,87 @@ React fica fora do `shared` scope em ambos os lados — uma decisao necessaria p
 | npm package por modulo | Elimina deploy independente — shell precisa redeploy para cada versao |
 | Single SPA | Camada adicional de abstracao sem beneficio claro |
 
-**O que aprendi:** Module Federation e uma solucao de nivel de browser — o runtime MF e carregado e executa no mesmo document que o shell. Isso e o que permite a heranca de CSS. O desafio tecnico foi que o Next.js nao gera containers MF com runtime autonomo por design — o `webpack.container.cjs` foi a solucao pragmatica para contornar essa limitacao sem abandonar Next.js.
+**O que aprendi:** Module Federation e uma solucao de nivel de browser — o runtime MF e carregado e executa no mesmo document que o shell. Isso e o que permite a heranca de CSS.
 
-A decisao de nao compartilhar React foi contraintuitiva — a documentacao do MF recomenda compartilhar dependencias. Mas com Next.js 16, o framework faz suas proprias operacoes de inicializacao do React que sao incompativeis com o mecanismo de shared scope do MF. A duplicacao de ~50KB e o preco do isolamento correto.
+A decisao de nao compartilhar React foi contraintuitiva — a documentacao do MF recomenda compartilhar dependencias. Mas com Next.js 16, o framework faz suas proprias operacoes de inicializacao do React que sao incompativeis com o mecanismo de shared scope do MF (erro RUNTIME-006). A duplicacao de ~50KB e o preco do isolamento correto.
 
-**Trade-offs aceitos:** React duplicado em cada bundle de remote. Build extra apos `next build` (o `webpack.container.cjs`). URL do sportsbook resolvida em build time via `NODE_ENV` (nao em runtime por operador — limitacao do modelo atual, resolvivel com `loadRemote()` dinamico em versoes futuras).
+**Trade-offs aceitos:** React duplicado em cada bundle de remote. URL do sportsbook resolvida em build time (sobreposta por `NEXT_PUBLIC_SPORTSBOOK_REMOTE` para staging/preview).
 
 **Referencia tecnica:** [ADR-004](./architecture/adr/ADR-004-module-federation.md) | [Module Federation](./architecture/module-federation.md)
+
+---
+
+## 4. Standalone webpack container para sportsbook remote
+
+**O problema:** O Next.js nao gera um container MF com runtime autonomo por design. O `remoteEntry.js` gerado pelo pipeline Next.js depende do runtime do propio app — quando o shell tenta consumi-lo em outro documento, o container nunca inicializa (tela em branco, sem erro no console).
+
+**A decisao:** Um script Node.js separado — `apps/sportsbook/webpack.container.cjs` — roda apos o `next build` e usa webpack programaticamente para gerar `public/remoteEntry.js` com o runtime webpack e o container MF embutidos. Como o arquivo esta em `public/`, o Next.js o serve estaticamente.
+
+**O que foi avaliado:**
+
+| Opcao | Problema |
+|---|---|
+| remoteEntry.js gerado pelo Next.js | Depende do runtime do sportsbook — nao inicializa no contexto do shell |
+| Webpack CLI com webpack.config.js | Mesmo resultado — o problema e o que gera o bundle, nao como e invocado |
+| Vite Library Mode | Formato de bundle diferente — incompativel com o protocolo MF 2.0 |
+| `webpack.container.cjs` standalone | Gera bundle autonomo com runtime MF embutido — funciona |
+
+**O que aprendi:** O webpack pode ser usado como biblioteca Node.js — sem webpack-cli, sem configuracao global. O `webpack.container.cjs` e simples: define o container MF como entry, pina React ao `node_modules` do sportsbook, e chama `webpack()` programaticamente. O resultado e um bundle que funciona em qualquer contexto que suporte JavaScript.
+
+**Trade-offs aceitos:** Build extra apos `next build`. Dois processos de build para o sportsbook (Next.js + webpack standalone). `publicPath` precisa ser correto para producao vs desenvolvimento.
+
+**Referencia tecnica:** [ADR-005](./architecture/adr/ADR-005-standalone-mf-container.md)
+
+---
+
+## 5. Custom Events para comunicacao shell↔remote
+
+**O problema:** O BetSlip vive no shell (para persistir entre navegacoes). O botao de adicionar aposta vive no sportsbook (remote MF). Como o sportsbook notifica o shell quando o usuario clica em uma odd, sem criar acoplamento de API?
+
+**A decisao:** Custom Events DOM. O sportsbook dispara `dispatchBetAdd(bet)` e `dispatchBetRemove(bet)` (de `packages/ui/src/events/bet-events.ts`). O `BetSlipContext` do shell registra `window.addEventListener` e acumula as apostas no estado local.
+
+**O que foi avaliado:**
+
+| Opcao | Problema |
+|---|---|
+| React Context compartilhado | Nao cruza boundary de MF — cada app tem seu proprio React tree |
+| Props do shell para o remote | Inverte o fluxo — remote precisaria conhecer a API do shell |
+| Estado global (Zustand/Redux) | Requer shared scope — incompativel com `shared: {}` |
+| postMessage | Projetado para iframes — sportsbook roda no mesmo document |
+| Custom Events DOM | Nativo, sem dependencias, funciona no mesmo document, desacoplado |
+
+**O que aprendi:** Custom Events sao o mecanismo nativo do browser para comunicacao entre partes isoladas de um mesmo documento. Eles funcionam perfeitamente atraves de boundaries de Module Federation porque nao dependem de nenhum runtime JavaScript compartilhado — apenas do DOM. O padrão tambem e extensivel: novos eventos podem ser adicionados sem modificar contratos existentes.
+
+**Trade-offs aceitos:** Sem tipagem forte de eventos em compile time (apenas convencao). Listeners precisam ser registrados e removidos corretamente (handled no `useEffect` do `BetSlipContext`).
+
+**Referencia tecnica:** [ADR-006](./architecture/adr/ADR-006-custom-events-communication.md)
+
+---
+
+## 6. Feature flags controlando UI via ClientConfig
+
+**O problema:** GrandBet e EliteBet tem UIs ligeiramente diferentes — EliteBet mostra E-Sports na sidebar, GrandBet nao. Como controlar isso sem codigo condicional no componente?
+
+**A decisao:** O campo `features.esports` no `ClientConfig` (boolean) e lido pelo componente de sidebar para decidir se o item E-Sports e renderizado. O campo `layout.borderRadius` define o valor da CSS var `--layout-border-radius` — todos os componentes herdam via CSS var sem saber qual cliente esta ativo.
+
+**Exemplos:**
+
+| | GrandBet | EliteBet |
+|---|---|---|
+| `features.esports` | `false` — item oculto | `true` — item visivel |
+| `layout.borderRadius` | `"md"` → 8px | `"lg"` → 16px |
+
+**O que foi avaliado:**
+
+| Opcao | Problema |
+|---|---|
+| `if (client === 'grandbet')` | Acoplamento — cada novo cliente requer mudanca de codigo |
+| Feature flags em banco de dados | Infraestrutura extra, latencia, sincronizacao |
+| CSS classes por cliente | Requer geracao de classes por cliente — complexidade sem beneficio |
+| ClientConfig.features + CSS vars | Leitura de config + cascata CSS — zero codigo condicional por cliente |
+
+**O que aprendi:** O poder do modelo de feature flags via JSON e que a UI se adapta sem codigo novo. Adicionar um cliente com esports=true nao requer nenhum `if` novo — apenas um JSON diferente. O mesmo vale para `borderRadius`, `betslipPosition`, e qualquer outro campo de `layout`. O schema Zod garante que todos os campos tenham defaults conservadores, entao um campo omitido no JSON nao quebra a aplicacao.
+
+**Trade-offs aceitos:** Mudancas de feature requerem PR + redeploy. Sem painel admin de feature flags em runtime. Para o modelo white-label com deploy por operador, isso e aceitavel e desejavel.
+
+**Referencia tecnica:** [ADR-002](./architecture/adr/ADR-002-config-schema.md)

@@ -65,8 +65,9 @@ export default function Page() {
         <main
           style={{
             flex: 1,
-            paddingLeft: '244px' /* 220px sidebar + 24px gap */,
-            paddingRight: '344px' /* 320px betslip + 24px gap */,
+            paddingLeft: 'calc(var(--sidebar-current-width, 220px) + 24px)',
+            paddingRight: 'calc(var(--betslip-current-width, 320px) + 24px)',
+            transition: 'padding 250ms ease',
             paddingTop: '24px',
             paddingBottom: '40px',
             minHeight: '100vh',

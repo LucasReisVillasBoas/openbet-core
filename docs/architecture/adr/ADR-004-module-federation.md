@@ -140,3 +140,11 @@ resolve: {
 **NPM packages por modulo:** Sportsbook publicado como pacote npm. Simple, mas elimina o beneficio de deploy independente — shell precisaria redeploy para cada versao nova do sportsbook.
 
 **Single SPA:** Framework de orquestracao de micro-frontends. Mais maduro que MF para alguns casos, mas adiciona uma camada de abstarcao sem beneficio claro no contexto atual.
+
+---
+
+## Referência: ADR-005 — Standalone webpack container
+
+A decisão de usar um container webpack standalone para o sportsbook (em vez de `NextFederationPlugin`) está documentada no **ADR-005**.
+
+Resumo: o `next.config.ts` do sportsbook não tem `ModuleFederationPlugin`. O artefato `remoteEntry.js` é gerado por `webpack.container.cjs` e commitado em `apps/sportsbook/public/`.

@@ -157,6 +157,36 @@ O sportsbook e compartilhado por todos os operadores (um unico deploy).
 
 ---
 
+## Demo vs Client deployments
+
+O shell suporta dois modos de operacao: **modo demo** (para portfolio e apresentacoes) e **modo producao por operador** (deploy dedicado a um cliente real).
+
+### Tabela de variaveis por modo
+
+| Variavel de ambiente | Demo Mode | GrandBet prod | EliteBet prod |
+|---|---|---|---|
+| `NEXT_PUBLIC_CLIENT_ID` | `client-grandbet` | `client-grandbet` | `client-elitebet` |
+| `NEXT_PUBLIC_DEMO_MODE` | `true` | `false` (ou ausente) | `false` (ou ausente) |
+| `NEXT_PUBLIC_SPORTSBOOK_REMOTE` | URL de producao | URL de producao | URL de producao |
+
+### O que DEMO_MODE habilita
+
+Quando `NEXT_PUBLIC_DEMO_MODE=true`, a interface exibe elementos extras para demonstrar a capacidade white-label da plataforma:
+
+- **Banner de demo** no topo da pagina: "OpenBet Core — Demo White-Label"
+- **ThemeToggle no header**: permite ao visitante alternar entre o tema GrandBet e o tema EliteBet em tempo real, sem reload de pagina
+
+Esses elementos sao uteis para portfolio e demos tecnicas, pois evidenciam a natureza white-label do framework de forma interativa.
+
+### O que DEMO_MODE desabilita em producao
+
+Em producucao (`NEXT_PUBLIC_DEMO_MODE=false` ou variavel ausente):
+
+- O banner de demo e ocultado — o operador nao quer que usuarios vejam referencias ao framework
+- O `ThemeToggle` e ocultado — um deploy de operador tem identidade visual fixa; nao faz sentido expor a troca de tema ao usuario final
+
+---
+
 ## Variaveis de ambiente necessarias
 
 ### sportsbook
@@ -168,8 +198,12 @@ Nenhuma variavel obrigatoria.
 | Variavel | Obrigatoria | Descricao |
 |---|---|---|
 | `NEXT_PUBLIC_CLIENT_ID` | Sim (em producao) | ID do operador — `client-grandbet` ou `client-elitebet` |
+| `NEXT_PUBLIC_SPORTSBOOK_REMOTE` | Nao | Override da URL do remoteEntry.js do sportsbook. Se ausente, usa a URL padrao resolvida por `NODE_ENV` |
+| `NEXT_PUBLIC_DEMO_MODE` | Nao | Quando `true`, exibe o banner de demo e o ThemeToggle na interface |
 
 Se `NEXT_PUBLIC_CLIENT_ID` nao estiver definida, o shell usa `client-grandbet` como fallback e exibe um aviso no console. O build nao falha, mas o comportamento em producao seria incorreto.
+
+`NEXT_PUBLIC_SPORTSBOOK_REMOTE` e util para apontar o shell para uma instancia de staging do sportsbook ou para um ambiente de preview da Vercel sem alterar o codigo-fonte.
 
 ---
 

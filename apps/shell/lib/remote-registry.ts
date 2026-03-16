@@ -18,14 +18,14 @@
  * remotes: { sportsbook: getRemotes().sportsbook }
  */
 
-const isProd = process.env.NODE_ENV === 'production'
-
-const REMOTES = {
-  sportsbook: isProd
-    ? 'sportsbook@https://openbet-core-sportsbook.vercel.app/remoteEntry.js'
-    : 'sportsbook@http://localhost:3001/remoteEntry.js',
-}
-
 export function getRemotes(): Record<string, string> {
-  return REMOTES
+  const sportsbookUrl =
+    process.env.NEXT_PUBLIC_SPORTSBOOK_REMOTE ||
+    (process.env.NODE_ENV === 'production'
+      ? 'https://openbet-core-sportsbook.vercel.app/remoteEntry.js'
+      : 'http://localhost:3001/remoteEntry.js')
+
+  return {
+    sportsbook: `sportsbook@${sportsbookUrl}`,
+  }
 }

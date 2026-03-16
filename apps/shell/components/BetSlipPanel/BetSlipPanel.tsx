@@ -33,6 +33,14 @@ export function BetSlipPanel({ topOffset }: { topOffset: number }) {
     setMode(selections.length >= 2 ? 'multiple' : 'single')
   }, [selections.length])
 
+  // Sync betslip width to CSS var for responsive layout
+  useEffect(() => {
+    document.documentElement.style.setProperty(
+      '--betslip-current-width',
+      collapsed ? '0px' : '320px'
+    )
+  }, [collapsed])
+
   const slipSelections: BetSlipSelection[] = selections.map(s => ({
     id: s.id,
     eventName: s.eventName,
