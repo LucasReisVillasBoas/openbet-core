@@ -52,8 +52,17 @@ Examples: --color-brand-primary, --typography-font-body, --spacing-unit, --radiu
 - config-schema schema fields must never use .any() or .unknown()
 - All schema defaults must be explicit and commented
 
+## ADR-004 Key Decisions (Shell / Module Federation Host)
+- MF package: @module-federation/enhanced (MF 2.0). NOT @module-federation/nextjs-mf (legacy).
+- Client selection: NEXT_PUBLIC_CLIENT_ID env var. Subdomain and query param rejected.
+- Remote URL flow: clients/*.config.json → Zod validation → getRemotes(config) in lib/remote-registry.ts → NextFederationPlugin factory function. Zero hardcoded URLs in shell source.
+- Shell file structure approved with two mandatory corrections:
+  (a) lib/client-config.ts is server-only — no 'use client' directive
+  (b) apps/shell/tsconfig.json must declare path alias @clients/* -> ../../clients/*
+- ThemeProvider.tsx is the ONLY client component in the shell. Receives validated ClientConfig as prop from server layout.tsx, then calls themeEngine.apply(). DOM boundary is explicit.
+
 ## Session State
-- Project status: BEGINNING — no files created yet
+- Project status: config-schema and theme-engine are built. apps/shell not yet created.
 - Agents in session: architect, config-eng, ui-engineer, mf-engineer
 
 ## Decision Protocol for Ambiguous Cases

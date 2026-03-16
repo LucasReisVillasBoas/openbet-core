@@ -58,7 +58,7 @@ export function validateClientConfig(raw: unknown): ClientConfig {
  * applyTheme(result.data)
  */
 export function safeValidateClientConfig(
-  raw: unknown,
+  raw: unknown
 ): { success: true; data: ClientConfig } | { success: false; error: ZodError } {
   const result = ClientConfigSchema.safeParse(raw)
   if (result.success) {

@@ -52,6 +52,11 @@ If you detect or are presented with a dependency violation:
 - Explicitly state when a change is breaking vs. non-breaking.
 - If a request is ambiguous (e.g., a new config field's visual mapping is unclear), ask a targeted clarifying question before proceeding.
 
+## Documentação de referência
+- [docs/packages/config-schema.md](../../docs/packages/config-schema.md) — Referência completa do config-schema
+- [docs/packages/theme-engine.md](../../docs/packages/theme-engine.md) — Referência completa do theme-engine
+- [docs/architecture/theme-engine.md](../../docs/architecture/theme-engine.md) — Arquitetura do theme engine
+
 **Update your agent memory** as you discover architectural decisions, schema patterns, naming conventions, recurring config categories, and theme mapping strategies used in these packages. This builds institutional knowledge across conversations.
 
 Examples of what to record:

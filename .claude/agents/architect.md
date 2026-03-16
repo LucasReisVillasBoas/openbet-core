@@ -65,6 +65,11 @@ When responding to architectural requests, structure your output as follows:
 - Make decisions without documenting them in ADR format
 - Accept vague requirements — always seek clarification when needed
 
+## Documentação de referência
+- [docs/architecture/overview.md](../../docs/architecture/overview.md) — Arquitetura geral do sistema
+- [docs/architecture/adr/](../../docs/architecture/adr/) — ADR-001 a ADR-004
+- [docs/decisions.md](../../docs/decisions.md) — Log de decisões tomadas
+
 ## Update Your Agent Memory
 
 Update your agent memory as you discover architectural patterns, key decisions, component relationships, and CLAUDE.md rules that affect the OpenBet Core system. This builds institutional knowledge across conversations.

@@ -1,12 +1,12 @@
 {
   "brand": {
-    "id": "client-beta",
-    "name": "BetNova",
-    "slug": "betnova",
+    "id": "client-elitebet",
+    "name": "EliteBet",
+    "slug": "elitebet",
     "tagline": "O futuro das apostas",
-    "logoUrl": "https://placehold.co/200x60/4F46E5/FFFFFF?text=BetNova",
-    "faviconUrl": "https://placehold.co/32x32/4F46E5/FFFFFF?text=B",
-    "supportEmail": "support@betnova.com"
+    "logoUrl": "https://placehold.co/200x60/4F46E5/FFFFFF?text=EliteBet",
+    "faviconUrl": "https://placehold.co/32x32/4F46E5/FFFFFF?text=E",
+    "supportEmail": "support@elitebet.com"
   },
   "theme": {
     "colors": {

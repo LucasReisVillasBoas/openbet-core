@@ -1,0 +1,6 @@
+{
+  "buildCommand": "cd ../.. && pnpm install --frozen-lockfile && pnpm --filter=@openbet/config-schema build && pnpm --filter=@openbet/theme-engine build && pnpm --filter=@openbet/ui build-storybook",
+  "outputDirectory": "storybook-static",
+  "installCommand": "echo skip",
+  "framework": null
+}

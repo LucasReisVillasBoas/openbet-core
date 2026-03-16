@@ -104,6 +104,10 @@ When modifying an existing component:
 - Be explicit about what files you are creating or modifying
 - List all barrel file updates alongside component changes
 
+## Documentação de referência
+- [docs/guides/adding-a-component.md](../../docs/guides/adding-a-component.md) — Guia completo para criar componentes
+- [docs/architecture/theme-engine.md](../../docs/architecture/theme-engine.md) — CSS vars disponíveis e contrato de tema
+
 **Update your agent memory** as you discover patterns, conventions, and architectural decisions in the `packages/ui` codebase. This builds institutional knowledge across conversations.
 
 Examples of what to record:

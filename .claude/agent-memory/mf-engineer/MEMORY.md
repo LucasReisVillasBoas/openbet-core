@@ -1,0 +1,89 @@
+# MF Engineer Memory — OpenBet Core
+
+## Architecture: Standalone Container Build (ADR-004 final)
+
+The sportsbook remote uses a **standalone webpack build** (`webpack.container.cjs`),
+NOT the Next.js webpack pipeline. See `patterns.md` for the full rationale.
+
+- Container: `apps/sportsbook/webpack.container.cjs` → `public/remoteEntry.js`
+- Run: `pnpm build:container` inside `apps/sportsbook`
+- NEVER add ModuleFederationPlugin to `apps/sportsbook/next.config.ts`
+
+## Remote URL Resolution
+
+`getRemotes()` in `apps/shell/lib/remote-registry.ts` uses `NODE_ENV` (build-time):
+- production → `sportsbook@https://openbet-core-sportsbook.vercel.app/remoteEntry.js`
+- development → `sportsbook@http://localhost:3001/remoteEntry.js`
+
+`next.config.ts` calls `getRemotes()` directly — no more hardcoded URL.
+Rationale: `next.config.ts` runs at build time; ClientConfig is per-request server-only
+and cannot feed the static webpack `remotes` map. The Vercel URL is a stable build-time
+constant, not an arbitrary hardcode. `getRemotes()` takes NO parameters (not ClientConfig).
+
+For true per-operator runtime overrides, a `loadRemote` mechanism would replace this.
+
+## Shared Dependencies Policy
+
+Both shell and sportsbook use `shared: {}` (empty). Reason: `@module-federation/enhanced`
+intercepts React imports and replaces them with shared scope accessors, which breaks
+Next.js's own React initialization. React 19 is bundled independently in each app.
+This diverges from the singleton mandate but is approved for this stack.
+
+See `patterns.md` for the full explanation.
+
+## Next.js 16 + Turbopack Incompatibility
+
+Next.js 16 enables Turbopack by default for `next build`. Turbopack is incompatible
+with webpack plugins including `ModuleFederationPlugin`. The ONLY correct fix is:
+
+- Add `--webpack` flag to the `build` script in each app's `package.json`
+- Do NOT add `experimental.turbo: undefined` — `experimental.turbo` was removed from
+  `ExperimentalConfig` in Next.js 16 (renamed to top-level `turbopack?: TurbopackOptions`)
+  and causes a TypeScript type error that fails the build
+- The `--webpack` flag is the authoritative Turbopack disable mechanism
+- Both apps already have `"dev": "next dev --webpack"` — `build` must match
+
+Build scripts (confirmed working):
+- `apps/shell/package.json`: `"build": "next build --webpack"`
+- `apps/sportsbook/package.json`: `"build": "next build --webpack"`
+
+## Known Warnings (Non-Fatal)
+
+1. **DTS download warning**: `Failed to download types archive from "http://10.0.0.107:<PORT>/@mf-types.zip"`
+   - Source: MF enhanced's automatic DTS sync uses the network IP instead of localhost
+   - Not fatal: federation runtime works correctly; DTS is developer ergonomics only
+   - Workaround: none needed; types are declared manually in `apps/shell/types/remote.d.ts`
+
+2. **async/await target warning**: "target environment does not appear to support async/await"
+   - Source: webpack browserslist heuristic mismatch in Next.js 16 + MF 2.0
+   - Not fatal: Next.js transpiles output correctly for actual target browsers
+
+## Key File Locations
+
+- `apps/shell/next.config.ts` — shell MF host config (client-side only, server gets alias)
+- `apps/shell/lib/client-config.ts` — server-only, Zod-validated ClientConfig loader
+- `apps/shell/lib/remote-registry.ts` — `getRemotes()` URL resolver (NODE_ENV-based, no params)
+- `apps/shell/lib/remote-stubs/sportsbook-SportsbookPage.tsx` — server-side stub (never rendered)
+- `apps/shell/components/SportsbookRemote.tsx` — lazy remote with ErrorBoundary + next/dynamic ssr:false
+- `apps/shell/components/ThemeProvider.tsx` — client boundary, calls `themeEngine.apply(config)`
+- `apps/sportsbook/webpack.container.cjs` — standalone MF 2.0 container build
+- `apps/sportsbook/app/sportsbook-page.tsx` — exposed component, CSS vars only
+- `apps/sportsbook/public/remoteEntry.js` — built artifact, starts with `var sportsbook;`
+
+## ClientConfig Schema: remotes field
+
+```ts
+remotes: z.record(z.string(), z.string().url()).default({})
+// Key: remote name (e.g. "sportsbook"), Value: base URL
+```
+
+## Known Remotes
+
+| Name | Exposed Module | Port |
+|------|---------------|------|
+| sportsbook | `./SportsbookPage` → `app/sportsbook-page.tsx` | 3001 |
+
+## Details
+
+See `patterns.md` for: standalone build rationale, theme inheritance mechanism,
+async/await warning root cause, DTS warning root cause.
